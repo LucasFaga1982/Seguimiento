@@ -13,13 +13,14 @@
     .card {
       background: #fff; padding: 1em; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.07);
       display: flex; flex-direction: column; justify-content: space-between; min-height: 120px;
+      cursor: pointer; transition: box-shadow 0.2s;
     }
+    .card:hover { box-shadow: 0 4px 16px rgba(44, 62, 80, 0.2); }
     .card-title { font-weight: bold; font-size: 1.1em; }
     .card-stage { margin: 0.5em 0; color: #555; }
     .card-actions { display: flex; gap: 0.5em; margin-top: 1em; }
     .btn { border: none; border-radius: 5px; padding: 0.6em 1em; background: #3498db; color: #fff; cursor: pointer; font-size: 1em;}
     .btn.whatsapp { background: #25d366; }
-    .btn.stage { background: #ff9800; }
     .logout { float: right; margin: 1em; }
     .editor-badge { font-size:0.8em; color:#fff; background:#2c3e50; padding:2px 8px; border-radius:5px; margin-left:5px;}
     .alert { background: #ffeb3b; color: #222; padding: 10px; border-radius: 5px; margin-bottom: 1em; }
@@ -30,13 +31,12 @@
   <div id="main"></div>
 
 <script>
+// CONFIGURA tu URL de Google Apps Script aquí:
+const APP_SCRIPT_API_URL = "https://script.google.com/macros/s/TU_DEPLOY_ID/exec"; // REEMPLAZA por tu URL de Apps Script
 const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT-9IeM2BVQBw1SQEkbdmmp2yLMVzG-4krVRmc-JdWb6BIX4MSTLVL8DbYyGbm864ChHRvICrsad7Hi/pub?output=csv";
-const APP_SCRIPT_API_URL = "https://script.google.com/macros/s/AKfycbzvn0Ts418vORNHBv0QFVgWzjVSDqAtX8d8GIJauipqOIkST65GtiC_gmq6Z_c9-qFyVg/exec"; // Cambia al tuyo
 const LOGIN_USER = "DOCENTESBROWN";
 const LOGIN_PASS = "NestorVive";
-
-// Estapas posibles, personaliza si querés
-const ETAPAS = ["cargado", "en fabricación", "terminada", "para entrega", "finalizado"];
+const ETAPAS = ["pedido", "en proceso", "listo", "entrega", "finalizado"];
 
 let isEditor = false;
 let pedidos = [];
@@ -46,8 +46,8 @@ function showLogin() {
   document.getElementById('main').innerHTML = `
     <div class="login">
       <h2>Ingreso de Editor</h2>
-      <input type="text" id="user" placeholder="Usuario" class="form" style="width:100%;margin-bottom:1em;">
-      <input type="password" id="pass" placeholder="Clave" class="form" style="width:100%;margin-bottom:1em;">
+      <input type="text" id="user" placeholder="Usuario" style="width:100%;margin-bottom:1em;">
+      <input type="password" id="pass" placeholder="Clave" style="width:100%;margin-bottom:1em;">
       <button class="btn" onclick="login()">Ingresar</button>
     </div>
   `;
@@ -103,22 +103,21 @@ function showPedidos() {
 
 function renderPedidos() {
   let html = `<div class="container">`;
-  if (isEditor) html += `<div class="alert">Modo Editor activo <span class="editor-badge">EDITORES</span></div>`;
+  if (isEditor) html += `<div class="alert">Modo Editor activo <span class="editor-badge">EDITORES</span><br>Toca una tarjeta para cambiar la etapa</div>`;
   html += `<div class="grid">`;
   pedidos.forEach((p, idx) => {
     const nombre = p["Nombre"] || p["nombre"] || p["Producto"] || p["producto"] || p[Object.keys(p)[2]];
-    const etapa = p["Etapa"] || p["etapa"] || p[Object.keys(p)[25]];
+    const etapa = p["Etapa"] || p["etapa"] || p[Object.keys(p)[23]];
     const celular = (p["Celular"] || p["celular"] || p[Object.keys(p)[3]]).replace(/\D/g, "");
     const contacto = p["Contacto"] || p["contacto"] || p[Object.keys(p)[5]];
-    const fechaEtapa = p["FechaEtapa"] || p["fechaetapa"] || p[Object.keys(p)[28]] || new Date().toISOString().substring(0,10);
+    const fechaEtapa = p["FechaEtapa"] || p["fechaetapa"] || p[Object.keys(p)[24]] || new Date().toISOString().substring(0,10);
     const msg = encodeURIComponent(`Hola! Tu pedido "${nombre}" está en la etapa "${etapa}".`);
     html += `
-      <div class="card">
+      <div class="card" ${isEditor ? `onclick="cambiarEtapa(${idx})"` : ""}>
         <div class="card-title">${nombre}</div>
         <div class="card-stage">Etapa: <b>${etapa}</b></div>
         <div class="card-actions">
-          <a class="btn whatsapp" target="_blank" href="https://wa.me/54${celular}?text=${msg}">WhatsApp</a>
-          ${isEditor ? `<button class="btn stage" onclick="cambiarEtapa(${idx})">Cambiar etapa</button>` : ""}
+          <a class="btn whatsapp" target="_blank" href="https://wa.me/54${celular}?text=${msg}" onclick="event.stopPropagation()">WhatsApp</a>
         </div>
       </div>
     `;
@@ -153,11 +152,9 @@ function checkOldPedidos() {
   pedidos.forEach((p, idx) => {
     const fechaEtapa = p["FechaEtapa"] || p["fechaetapa"] || p[Object.keys(p)[24]];
     if (fechaEtapa && timeDiffDays(fechaEtapa) >= 7) {
-      // Notificación local simple, para push necesitas backend/service worker
       setTimeout(()=>{
         alert(`El pedido "${p["Nombre"]||p["Producto"]}" lleva más de 7 días en la misma etapa ("${p["Etapa"]}").`);
       }, 1000);
-      // Puedes enviar email de alerta a los editores usando Apps Script
       fetch(`${APP_SCRIPT_API_URL}?action=alerta&pedido=${encodeURIComponent(p["Nombre"]||p["Producto"])}&dias=${timeDiffDays(fechaEtapa)}`,{method:'GET'});
     }
   });
