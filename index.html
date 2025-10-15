@@ -1,303 +1,408 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Seguimiento de Productos — Docentes Brown</title>
-  <style>
-    :root{
-      --bg:#f3efdc; --card:#ffffff; --ink:#1f2937; --muted:#6b7280;
-      --brand:#24496e; --brand-2:#1b3550; --accent:#ef9963; --ok:#16a34a; --ring:rgba(36,73,110,.2);
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial}
-    body{margin:0;display:flex;flex-direction:column}
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Seguimiento de Pedidos — Docentes Brown</title>
+<style>
+  :root{
+    --primary:#24496e;   /* azul DB */
+    --accent:#ef9963;    /* salmón DB */
+    --bg:#f3efdc;        /* crema DB */
+    --purple:#4d3069;    /* violeta DB */
+    --text:#1f2937;
+    --ok:#0ea5e9;
+    --warn:#eab308;
+    --danger:#dc2626;
+    --muted:#6b7280;
+    --card:#ffffff;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; font-family: system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,"Helvetica Neue",Arial;
+    background:var(--bg); color:var(--text);
+  }
+  header{
+    position:sticky; top:0; z-index:10;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:12px 16px; background:var(--primary); color:#fff;
+    box-shadow:0 2px 8px rgba(0,0,0,.2);
+  }
+  header .title{ font-weight:700; letter-spacing:.3px }
+  header .login-btn{
+    background:var(--accent); color:#1b1b1b; border:none; border-radius:999px;
+    padding:8px 12px; font-weight:700; cursor:pointer;
+  }
+  main{ padding:14px; max-width:980px; margin:0 auto; }
+  .grid{
+    display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:12px;
+  }
+  .card{
+    background:var(--card);
+    border:2px solid #1f3d58; border-radius:16px; padding:12px 12px 14px;
+    box-shadow:0 4px 10px rgba(0,0,0,.08);
+    position:relative; transition:transform .08s ease;
+  }
+  .card:hover{ transform:translateY(-2px); }
+  .card .top{
+    display:flex; align-items:center; justify-content:space-between; gap:8px;
+    margin-bottom:6px;
+  }
+  .docente{ font-weight:800; color:#123; }
+  .pedido{ font-size:12px; color:var(--muted) }
+  .etapa{
+    display:inline-block; padding:6px 10px; border-radius:999px;
+    background:var(--accent); font-weight:700; font-size:12px; color:#1b1b1b;
+  }
+  .overdue-dot{
+    position:absolute; right:10px; top:10px; width:10px; height:10px;
+    background:var(--danger); border-radius:999px; box-shadow:0 0 0 3px rgba(220,38,38,.15);
+  }
+  .muted{ color:var(--muted); font-size:12px; margin-top:4px; }
 
-    /* Header Docentes Brown */
-    header{
-      position:sticky;top:0;z-index:20;
-      background:linear-gradient(180deg,#fff,rgba(255,255,255,.92));
-      border-bottom:1px solid #e5e7eb; backdrop-filter: blur(6px);
-      padding:.75rem .9rem; display:flex; align-items:center; justify-content:space-between; gap:.5rem;
-    }
-    .brandMark{display:inline-flex;width:36px;height:36px;border-radius:10px;background:var(--brand);
-      color:#fff;align-items:center;justify-content:center;font-weight:900;box-shadow:0 3px 8px rgba(36,73,110,.25)}
-    .hd-title{line-height:1}
-    .hd-sub{font-size:.80rem;color:var(--muted)}
-    .actions{display:flex;gap:.45rem}
-    button{
-      border:1px solid #e5e7eb;background:#fff;color:var(--ink);
-      padding:.5rem .8rem;border-radius:.7rem;font-weight:700;cursor:pointer
-    }
-    button.primary{background:var(--brand);border-color:var(--brand);color:#fff}
-    button:focus{outline:none;box-shadow:0 0 0 3px var(--ring)}
-    button.btn-sm{padding:.25rem .45rem;font-size:.85rem;border-radius:.5rem}
+  /* Login modal */
+  .modal, .actions-modal{
+    position:fixed; inset:0; display:none; align-items:center; justify-content:center;
+    background:rgba(0,0,0,.45); z-index:50; padding:16px;
+  }
+  .modal.active, .actions-modal.active{ display:flex; }
+  .modal .box, .actions-modal .box{
+    width:100%; max-width:420px; background:#fff; border-radius:18px;
+    box-shadow:0 20px 50px rgba(0,0,0,.3); padding:16px;
+  }
+  .box h3{ margin:0 0 12px 0; color:var(--primary) }
+  .row{ display:flex; gap:10px; margin-bottom:10px; }
+  .row input, .row select{
+    flex:1; padding:10px 12px; border:1px solid #cbd5e1; border-radius:12px; font-size:16px;
+  }
+  .btn{
+    appearance:none; border:none; border-radius:12px; padding:10px 14px;
+    font-weight:800; cursor:pointer;
+  }
+  .btn.primary{ background:var(--primary); color:#fff; }
+  .btn.accent{ background:var(--accent); color:#1b1b1b; }
+  .btn.ghost{ background:transparent; color:var(--primary); border:2px solid var(--primary); }
+  .btn.whatsapp{ background:#25d366; color:#08340f; }
+  .btn.danger{ background:var(--danger); color:#fff; }
+  .btn-row{ display:flex; gap:10px; flex-wrap:wrap; }
+  .box .label{ font-size:12px; color:var(--muted); margin-bottom:4px; }
+  .x{ position:absolute; right:12px; top:10px; background:transparent; border:none; font-size:22px; cursor:pointer; color:#6b7280 }
 
-    main{padding:.85rem .9rem 2.8rem}
+  /* Toast */
+  .toast{
+    position:fixed; left:50%; transform:translateX(-50%);
+    bottom:20px; background:#111827; color:#fff; padding:10px 14px; border-radius:12px;
+    box-shadow:0 10px 24px rgba(0,0,0,.3); z-index:60; display:none;
+  }
+  .toast.show{ display:block; }
 
-    .toolbar{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.75rem}
-    .toolbar input[type="search"], .toolbar select{
-      padding:.6rem .75rem;border:1px solid #e5e7eb;border-radius:.7rem;background:#fff
-    }
-    .pill{font-size:.75rem;background:#f8fafc;border:1px solid #e5e7eb;border-radius:999px;padding:.15rem .5rem;color:var(--muted)}
-    #roleBadge{margin-left:.4rem}
-
-    .alert{margin:.6rem 0;padding:.6rem .8rem;border-radius:.7rem;border:1px solid #fecaca;background:#fff1f2;color:#7f1d1d;display:none}
-    .banner{position:sticky;top:3.4rem;background:#fff7ed;border:1px solid #fed7aa;color:#7c2d12;padding:.6rem .8rem;border-radius:.7rem;margin-bottom:.7rem;display:none}
-
-    .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem}
-    @media (min-width:960px){.grid{grid-template-columns:repeat(4,minmax(0,1fr));}}
-
-    .card{
-      background:var(--card);border:1px solid #e5e7eb;border-radius:1rem;padding:.9rem;min-height:140px;
-      box-shadow:0 2px 6px rgba(0,0,0,.05);display:flex;flex-direction:column;gap:.55rem
-    }
-    .row{display:flex;align-items:center;justify-content:space-between;gap:.5rem}
-    .name{font-weight:800;letter-spacing:.2px}
-    .stage{
-      display:inline-flex;align-items:center;gap:.35rem;border-radius:.6rem;padding:.25rem .55rem;
-      background:#eff6ff;border:1px dashed #dbeafe;font-weight:700;color:var(--brand-2)
-    }
-    .kv{display:flex;gap:.5rem;align-items:center;font-size:.9rem;color:var(--muted);flex-wrap:wrap}
-    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;background:#f8fafc;border:1px solid #e2e8f0;border-radius:.4rem;padding:.15rem .4rem}
-    .cta{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.15rem}
-    .wa{display:inline-flex;align-items:center;gap:.35rem;text-decoration:none;border:1px solid #22c55e;color:#14532d;background:#dcfce7;border-radius:.7rem;padding:.45rem .65rem;font-weight:800}
-    .hidden{display:none !important}
-  </style>
+  /* WhatsApp notify footer */
+  .notify-bar{
+    position:fixed; bottom:12px; left:12px; right:12px; z-index:45;
+    display:none; background:#fff; border:2px dashed var(--warn); color:#1b1b1b;
+    border-radius:16px; padding:10px 12px; box-shadow:0 8px 24px rgba(0,0,0,.2);
+  }
+  .notify-bar.active{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
+  .notify-bar b{ color:#92400e }
+  a{ color:inherit; text-decoration:none; }
+</style>
 </head>
 <body>
   <header>
-    <div style="display:flex;align-items:center;gap:.6rem">
-      <span class="brandMark">DB</span>
-      <div class="hd-title">
-        <div style="font-weight:900;color:var(--brand-2)">Docentes Brown</div>
-        <div class="hd-sub">Seguimiento de productos</div>
-      </div>
-    </div>
-    <div class="actions">
-      <span id="roleBadge" class="pill hidden">Editor</span>
-      <button id="btnRefresh" title="Recargar">Recargar</button>
-      <button id="btnToggleEdit" class="primary" title="Cambiar a modo editor">Modo editor</button>
-    </div>
+    <div class="title">📦 Seguimiento de Pedidos — <span style="font-weight:300">Docentes Brown</span></div>
+    <button class="login-btn" id="loginBtn">Ingresar</button>
   </header>
 
   <main>
-    <div id="staleBanner" class="banner"></div>
-    <div id="appAlert" class="alert"></div>
-
-    <div class="toolbar">
-      <input id="search" type="search" placeholder="Buscar por nombre, etapa o seguimiento…" />
-      <select id="filterEtapa">
-        <option value="__ALL__">Todas las etapas</option>
-      </select>
-    </div>
-
     <div id="grid" class="grid" aria-live="polite"></div>
   </main>
 
+  <!-- Login -->
+  <div class="modal" id="loginModal" aria-hidden="true">
+    <div class="box" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
+      <button class="x" id="closeLogin" title="Cerrar">×</button>
+      <h3 id="loginTitle">Acceso</h3>
+      <div class="row"><input id="user" placeholder="Usuario" autocomplete="username" /></div>
+      <div class="row"><input id="pass" placeholder="Contraseña" type="password" autocomplete="current-password" /></div>
+      <div class="btn-row">
+        <button class="btn primary" id="doLogin">Ingresar</button>
+        <button class="btn ghost" id="cancelLogin">Cancelar</button>
+      </div>
+      <div class="muted">Usuario: <b>docentesbrown</b> — Contraseña: <b>NestorVive</b></div>
+    </div>
+  </div>
+
+  <!-- Acciones por tarjeta -->
+  <div class="actions-modal" id="actionsModal" aria-hidden="true">
+    <div class="box" role="dialog" aria-modal="true" aria-labelledby="actionsTitle">
+      <button class="x" id="closeActions" title="Cerrar">×</button>
+      <h3 id="actionsTitle">Acciones</h3>
+      <div class="muted" id="selectedInfo"></div>
+      <div class="label" style="margin-top:10px">Contacto</div>
+      <div class="btn-row">
+        <a class="btn whatsapp" id="waBtn" target="_blank" rel="noopener">💬 WhatsApp</a>
+      </div>
+      <div class="label" style="margin-top:10px">Actualizar etapa</div>
+      <div class="btn-row">
+        <button class="btn accent etapabtn" data-etapa="CARGADO">CARGADO</button>
+        <button class="btn accent etapabtn" data-etapa="EN PRODUCCIÓN">EN PRODUCCIÓN</button>
+        <button class="btn accent etapabtn" data-etapa="PARA ENTREGAR">PARA ENTREGAR</button>
+        <button class="btn accent etapabtn" data-etapa="FINALIZADO">FINALIZADO</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Aviso WhatsApp atrasos -->
+  <div class="notify-bar" id="notifyBar">
+    <div>⚠️ <b id="overdueCount">0</b> pedidos con más de 7 días sin cambios.</div>
+    <a class="btn whatsapp" id="notifyLink" target="_blank" rel="noopener">Avisar por WhatsApp</a>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
 <script>
-/* ===== CONFIG (forzado para columnas correctas) ===== */
-const CONFIG = {
-  APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbxKsyaQlrdnPFswmwht4qVUASPxklXOKVBS9ZToIeFBpqbaMQa-ZQx1gTzHcdGZbBDLmw/exec",
-  HAS_HEADER: true,
-  FORCE_COLS: true, // evita autodetección; usamos índices fijos
-  // 0-index: A=0 ... Z=25, AA=26, AB=27
-  COL: { NOMBRE:2, TELEFONO:3, CONTACTO:5, ETAPA:25, ULTIMA:27, SEGUIM:26 },
-  AUTH: { user:"DOCENTESBROWN", pass:"NestorVive" }
-};
+  // ===================== CONFIG =====================
+  const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT-9IeM2BVQBw1SQEkbdmmp2yLMVzG-4krVRmc-JdWb6BIX4MSTLVL8DbYyGbm864ChHRvICrsad7Hi/pub?output=csv';
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbybFdchci2C5tbI3irTNcbXavFpsaA6N_0DXW7Rr6iilCGzEu0w_A4gQ9SsxTdzDs8yIA/exec';
 
-let RAW_ROWS = [];
-let UNIQUE_ETAPAS = new Set();
-let isEditor = false;
+  const ADMIN_USER = 'docentesbrown';
+  const ADMIN_PASS = 'NestorVive';
 
-const $ = (sel)=>document.querySelector(sel);
-const showAlert = (msg)=>{ const b=$('#appAlert'); b.textContent=msg; b.style.display='block'; };
-const clearAlert = ()=>{ const b=$('#appAlert'); b.textContent=''; b.style.display='none'; };
-const sanitizePhoneForWA = (raw)=>{
-  if(!raw) return "";
-  let n = (""+raw).replace(/\D+/g,"");
-  if(!n.startsWith("54")) n = "54"+n;
-  n = n.replace(/^54(0+)/, "54");
-  n = n.replace(/^54(\d{2,4})15/, "54$1");
-  return n;
-};
-const formatDaysAgo = (iso)=>{ try{ const d=new Date(iso); if(isNaN(d)) return null; return Math.floor((Date.now()-d)/(1000*60*60*24)); }catch{ return null; } };
+  // ===================== STATE =====================
+  let data = [];            // registros parseados
+  let isAdmin = false;      // sesión
+  let selected = null;      // tarjeta seleccionada para acciones
+  let overdues = [];        // atrasados > 7 días
 
-// JSONP (sin CORS) para leer datos
-function jsonp(url, timeout=8000){
-  return new Promise((resolve, reject)=>{
-    const cb = "__jsonp_cb_" + Math.random().toString(36).slice(2);
-    const t = setTimeout(()=>{ cleanup(); reject(new Error("JSONP timeout")); }, timeout);
-    function cleanup(){ clearTimeout(t); delete window[cb]; if(script && script.parentNode) script.parentNode.removeChild(script); }
-    window[cb] = (data)=>{ cleanup(); resolve(data); };
-    const script = document.createElement('script');
-    script.src = url + (url.includes('?') ? '&' : '?') + 'callback=' + cb;
-    script.onerror = ()=>{ cleanup(); reject(new Error("JSONP error")); };
-    document.head.appendChild(script);
-  });
-}
+  // ===================== HELPERS =====================
+  function showToast(msg, ms=2200){
+    const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show');
+    setTimeout(()=>t.classList.remove('show'), ms);
+  }
 
-async function fetchSheet(){
-  try{ const r = await fetch(CONFIG.APPS_SCRIPT_URL + "?action=sheet", { cache:"no-store" }); if(r.ok) return await r.json(); }catch{}
-  // fallback sin CORS
-  return await jsonp(CONFIG.APPS_SCRIPT_URL + "?action=sheet");
-}
+  function parseCSV(text){
+    // Parser básico que soporta campos entrecomillados (comas internas y comillas escapadas)
+    const rows=[]; let i=0, cur='', inQ=false, row=[];
+    while(i<text.length){
+      const c=text[i];
+      if(inQ){
+        if(c==='"'){
+          if(text[i+1]==='"'){ cur+='"'; i++; }
+          else { inQ=false; }
+        }else cur+=c;
+      }else{
+        if(c==='"'){ inQ=true; }
+        else if(c===','){ row.push(cur); cur=''; }
+        else if(c==='\n' || c==='\r'){
+          if(c==='\r' && text[i+1]==='\n') i++;
+          row.push(cur); rows.push(row); row=[]; cur='';
+        }else cur+=c;
+      }
+      i++;
+    }
+    if(cur.length>0 || row.length>0){ row.push(cur); rows.push(row); }
+    return rows.filter(r=>r.length>1 || (r[0]&&r[0].trim()!==''));
+  }
 
-async function loadData(){
-  clearAlert();
-  try{
-    const js = await fetchSheet();
-    if(!(js && js.ok && Array.isArray(js.rows) && js.rows.length)) throw new Error("Sin filas");
-    const rows = js.rows.slice();
-    if(CONFIG.HAS_HEADER){ rows.shift(); } // NO auto-detectar columnas
-    RAW_ROWS = rows;
-    UNIQUE_ETAPAS = new Set(rows.map(r=>r[CONFIG.COL.ETAPA]).filter(Boolean));
-    buildEtapaFilter();
-    render();
-    if(isEditor) checkStale();
-  }catch(err){ console.error(err); showAlert("❌ Error cargando datos: " + (err?.message || err)); }
-}
+  function parseDateCell(s){
+    if(!s) return null;
+    const t=s.trim();
+    let d=new Date(t);
+    if(!isNaN(d)) return d;
+    const m=t.match(/^(\d{1,2})[\/\\-](\d{1,2})[\/\\-](\d{2,4})$/);
+    if(m){
+      const dd=+m[1], mm=+m[2]-1, yyyy=+m[3]<100?2000+(+m[3]):+m[3];
+      d=new Date(yyyy,mm,dd);
+      if(!isNaN(d)) return d;
+    }
+    return null;
+  }
 
-function buildEtapaFilter(){
-  const sel=$('#filterEtapa');
-  sel.innerHTML='<option value="__ALL__">Todas las etapas</option>';
-  Array.from(UNIQUE_ETAPAS).sort((a,b)=>String(a).localeCompare(String(b))).forEach(v=>{
-    const opt=document.createElement('option'); opt.value=v; opt.textContent=v; sel.appendChild(opt);
-  });
-  sel.value="__ALL__";
-}
+  function daysBetween(a,b){ return Math.floor((a - b) / 86400000); }
 
-function render(){
-  const q=$('#search').value.toLowerCase().trim();
-  const f=$('#filterEtapa').value || "__ALL__";
-  const grid=$('#grid'); grid.innerHTML='';
-  RAW_ROWS
-    .filter(r=>{
-      const nom=String(r[CONFIG.COL.NOMBRE]||'').toLowerCase();
-      const etp=String(r[CONFIG.COL.ETAPA]||''); const seg=String(r[CONFIG.COL.SEGUIM]||'').toLowerCase();
-      const okQ=!q || nom.includes(q) || etp.toLowerCase().includes(q) || seg.includes(q);
-      const okF=(f==="__ALL__") || etp===f;
-      return okQ && okF;
-    })
-    .forEach((r,i)=>{
-      const name=r[CONFIG.COL.NOMBRE]||'(sin nombre)';
-      const etapa=r[CONFIG.COL.ETAPA]||'(sin etapa)';
-      const tel=r[CONFIG.COL.TELEFONO]||'';
-      const email=r[CONFIG.COL.CONTACTO]||'';
-      const ultima=r[CONFIG.COL.ULTIMA]||'';
-      const seg=r[CONFIG.COL.SEGUIM]||'';
-      const days=ultima?formatDaysAgo(ultima):null;
+  function formatPhoneAR(raw){
+    if(!raw) return '';
+    let n=(raw+'').replace(/\\D/g,'');
+    if(n.startsWith('549')) return n;
+    if(n.startsWith('54') && !n.startsWith('549')) return '549'+n.slice(2);
+    if(n.startsWith('0')) n=n.slice(1);
+    if(n.startsWith('15')) n=n.slice(2);
+    if(n.length===10 && n.startsWith('11')) return '549'+n;
+    if(n.length>=10) return '54'+(n.startsWith('9')?'':'9')+n;
+    return n;
+  }
 
-      const card=document.createElement('article');
+  function etapaBadge(etapa){
+    return `<span class="etapa">${etapa || '—'}</span>`;
+  }
+
+  function openModal(el){ el.classList.add('active'); el.setAttribute('aria-hidden','false'); }
+  function closeModal(el){ el.classList.remove('active'); el.setAttribute('aria-hidden','true'); }
+
+  function authUpdateRow(row, etapa){
+    return new Promise((resolve)=> {
+      const url = `${SCRIPT_URL}?action=update&row=${encodeURIComponent(row)}&etapa=${encodeURIComponent(etapa)}&_=${Date.now()}`;
+      const img = new Image();
+      img.onload = ()=> resolve();
+      img.onerror = ()=> resolve();
+      img.src = url;
+    });
+  }
+
+  // ===================== RENDER =====================
+  function render(){
+    const grid=document.getElementById('grid');
+    grid.innerHTML='';
+
+    overdues = [];
+    const now=new Date();
+
+    data.forEach(rec=>{
+      const d=parseDateCell(rec.fechaEtapa);
+      const days = d ? daysBetween(now, d) : null;
+      const isFinal = (rec.etapa||'').toUpperCase().trim()==='FINALIZADO';
+      const isOver = !isFinal && d && days>7;
+
+      if(isOver) overdues.push({pedido:rec.pedido, docente:rec.docente, etapa:rec.etapa, dias:days});
+
+      const card=document.createElement('div');
       card.className='card';
       card.innerHTML = `
-        <div class="row">
-          <div class="name" title="${name}">${name}</div>
-          <span class="stage">${etapa}</span>
+        ${isOver ? '<div class="overdue-dot" title="Atrasado (+7 días)"></div>' : ''}
+        <div class="top">
+          <div>
+            <div class="docente">${rec.docente || '—'}</div>
+            <div class="pedido">Pedido: <b>${rec.pedido || '—'}</b></div>
+          </div>
+          <div>${etapaBadge(rec.etapa)}</div>
         </div>
-        <div class="kv"><strong>Seguimiento:</strong> <code class="mono">${seg || '—'}</code> ${seg ? '<button class="btn-sm copy">Copiar</button>' : ''}</div>
-        <div class="kv"><strong>Últ. act.:</strong> ${ultima ? new Date(ultima).toLocaleDateString() : '—'} ${(days!=null)?`<span class="pill">${days} días</span>`:''}</div>
-        <div class="cta">
-          <a class="wa" target="_blank" rel="noopener" href="https://wa.me/${sanitizePhoneForWA(tel)}?text=${encodeURIComponent(`Hola ${name}, te escribimos de Docentes Brown. Tu Agenda está en la etapa: ${etapa}.`)}">WhatsApp</a>
-          <button class="btn-sm btnEdit" ${isEditor?'':'disabled'}>Cambiar etapa</button>
-        </div>`;
+        <div class="muted">${d ? 'Fecha etapa: '+d.toLocaleDateString() : 'Sin fecha de etapa'}</div>
+      `;
 
-      const copy=card.querySelector('.copy');
-      if(copy){ copy.addEventListener('click', (e)=>{ e.stopPropagation(); if(seg) navigator.clipboard?.writeText(seg).catch(()=>{}); }); }
-
-      const btnE=card.querySelector('.btnEdit');
-      btnE.addEventListener('click',(ev)=>{ ev.stopPropagation(); if(!isEditor) return; openStage(i,etapa); });
-      card.addEventListener('click', ()=>{ if(isEditor) openStage(i,etapa); });
+      if(isAdmin){
+        card.style.cursor='pointer';
+        card.addEventListener('click', ()=>{
+          selected = rec;
+          document.getElementById('selectedInfo').innerHTML =
+            `Docente: <b>${rec.docente || '—'}</b><br>Pedido: <b>${rec.pedido || '—'}</b><br>Etapa actual: <b>${rec.etapa || '—'}</b>`;
+          const phone = formatPhoneAR(rec.tel);
+          const msg = `Hola, nos comunicamos de Docentes Brown, tu calificador 2026 ya se encuentra finalizado.`;
+          const waHref = `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
+          const waBtn = document.getElementById('waBtn');
+          if(phone){ waBtn.href = waHref; waBtn.classList.remove('danger'); waBtn.textContent='💬 WhatsApp'; }
+          else { waBtn.href='#'; waBtn.classList.add('danger'); waBtn.textContent='⚠️ Sin teléfono'; }
+          openModal(document.getElementById('actionsModal'));
+        });
+      }
 
       grid.appendChild(card);
     });
-}
 
-function openStage(rowIdx, current){
-  const next = prompt("Nueva etapa:", current || "");
-  if(next==null) return;
-  saveStage(rowIdx, next.trim());
-}
-
-async function saveStage(rowIdx, newStage){
-  if(!newStage) return;
-  const r = RAW_ROWS[rowIdx]; const prev = r[CONFIG.COL.ETAPA];
-  r[CONFIG.COL.ETAPA] = newStage;
-  const name = r[CONFIG.COL.NOMBRE] || '';
-  const email = r[CONFIG.COL.CONTACTO] || '';
-  const rowNumber = CONFIG.HAS_HEADER ? (rowIdx + 2) : (rowIdx + 1); // +1 por 1-index, +1 por encabezado
-
-  render();
-  try{
-    const body = new URLSearchParams({
-      action:"updateStage", rowNumber:String(rowNumber), newStage, name, email,
-      user:CONFIG.AUTH.user, pass:CONFIG.AUTH.pass
-    });
-    const res = await fetch(CONFIG.APPS_SCRIPT_URL, {
-      method:"POST", headers:{ "Content-Type":"application/x-www-form-urlencoded;charset=UTF-8" }, body
-    });
-    const js = await res.json();
-    if(js && js.ok){
-      r[CONFIG.COL.ULTIMA] = new Date().toISOString(); // reflejar AB en UI
-      UNIQUE_ETAPAS.add(newStage); buildEtapaFilter(); render();
+    // Notify bar for overdues
+    const bar=document.getElementById('notifyBar');
+    if(overdues.length>0){
+      document.getElementById('overdueCount').textContent = overdues.length;
+      const list = overdues.slice(0,10).map(o=>`Pedido ${o.pedido} (${o.docente}) — ${o.dias} días en ${o.etapa}`).join('\\n');
+      const extra = overdues.length>10 ? `\\n…y ${overdues.length-10} más.` : '';
+      const notifyMsg = `Alerta pedidos con más de 7 días sin cambios (no finalizados):\\n${list}${extra}`;
+      const adminPhone = formatPhoneAR('1153196358');
+      document.getElementById('notifyLink').href = `https://wa.me/${adminPhone}?text=${encodeURIComponent(notifyMsg)}`;
+      bar.classList.add('active');
     }else{
-      r[CONFIG.COL.ETAPA] = prev; render();
-      showAlert("❌ Error al actualizar: " + (js?.error || "desconocido"));
+      bar.classList.remove('active');
     }
-  }catch(err){
-    r[CONFIG.COL.ETAPA] = prev; render();
-    showAlert("❌ Fallo de red guardando: " + (err?.message || err));
   }
-}
 
-function checkStale(){
-  const stale = RAW_ROWS.map((r)=>({
-    name:r[CONFIG.COL.NOMBRE], stage:r[CONFIG.COL.ETAPA],
-    days:r[CONFIG.COL.ULTIMA]?formatDaysAgo(r[CONFIG.COL.ULTIMA]):null
-  })).filter(o=>o.days!=null && o.days>=7);
+  // ===================== LOAD CSV =====================
+  async function loadData(){
+    try{
+      const res = await fetch(CSV_URL);
+      const text = await res.text();
+      const rows = parseCSV(text);
+      if(!rows.length) { showToast('No hay datos'); return; }
 
-  const banner=$('#staleBanner');
-  if(stale.length){
-    banner.style.display='block';
-    banner.textContent = "⚠️ Pedidos estancados: " + stale.map(s=>`${s.name} (${s.stage}, ${s.days} días)`).join("; ");
-    if("Notification" in window){
-      Notification.requestPermission().then(st=>{
-        if(st==="granted"){
-          stale.slice(0,3).forEach(s=> new Notification("Pedido estancado", { body:`${s.name} sigue ${s.days} días en etapa: ${s.stage}` }));
-        }
-      });
+      const header = rows[0];
+      for(let i=1;i<rows.length;i++){
+        const r = rows[i];
+        data.push({
+          sheetRow: i+1,           // fila real en la hoja (header es fila 1, primera data es 2)
+          docente: r[2] || '',      // C
+          tel:     r[3] || '',      // D
+          correo:  r[5] || '',      // F
+          etapa:   r[25] || '',     // Z
+          pedido:  r[26] || '',     // AA
+          fechaEtapa: r[27] || ''   // AB
+        });
+      }
+
+      render();
+    }catch(err){
+      console.error(err);
+      showToast('Error al cargar el CSV');
     }
-  }else{
-    banner.style.display='none'; banner.textContent='';
   }
-}
 
-/* ===== Auth editor ===== */
-function ensureEditor(){
-  isEditor = localStorage.getItem("editor")==="1";
-  $('#roleBadge').classList.toggle('hidden', !isEditor);
-  $('#btnToggleEdit').textContent = isEditor ? "Salir de editor" : "Modo editor";
-  render();
-}
-function toggleEdit(){
-  if(isEditor){ localStorage.removeItem("editor"); ensureEditor(); }
-  else{
-    const u = prompt("Usuario:"); const p = u!=null ? prompt("Clave:") : null;
-    if(u===null || p===null) return;
-    if(u==="DOCENTESBROWN" && p==="NestorVive"){ localStorage.setItem("editor","1"); ensureEditor(); checkStale(); }
-    else alert("Credenciales incorrectas");
+  // ===================== EVENTS =====================
+  // Login
+  const loginBtn=document.getElementById('loginBtn');
+  const loginModal=document.getElementById('loginModal');
+  loginBtn.addEventListener('click', ()=>{
+    if(isAdmin){
+      isAdmin=false; localStorage.removeItem('db_admin');
+      loginBtn.textContent='Ingresar';
+      showToast('Sesión cerrada');
+      render();
+    }else{
+      openModal(loginModal);
+      setTimeout(()=>document.getElementById('user').focus(),10);
+    }
+  });
+  document.getElementById('doLogin').addEventListener('click', ()=>{
+    const u=document.getElementById('user').value.trim();
+    const p=document.getElementById('pass').value;
+    if(u==='docentesbrown' && p==='NestorVive'){
+      isAdmin=true; localStorage.setItem('db_admin','1');
+      loginBtn.textContent='Salir';
+      closeModal(loginModal);
+      showToast('Sesión iniciada');
+      render();
+    }else{
+      showToast('Usuario o contraseña inválidos');
+    }
+  });
+  document.getElementById('cancelLogin').addEventListener('click', ()=> closeModal(loginModal));
+  document.getElementById('closeLogin').addEventListener('click', ()=> closeModal(loginModal));
+  loginModal.addEventListener('click', (e)=>{ if(e.target===loginModal) closeModal(loginModal); });
+
+  // Acciones por tarjeta
+  const actionsModal=document.getElementById('actionsModal');
+  document.getElementById('closeActions').addEventListener('click', ()=> closeModal(actionsModal));
+  actionsModal.addEventListener('click', (e)=>{ if(e.target===actionsModal) closeModal(actionsModal); });
+
+  document.querySelectorAll('.etapabtn').forEach(btn=>{
+    btn.addEventListener('click', async (ev)=>{
+      if(!isAdmin || !selected) return;
+      const nueva = ev.currentTarget.getAttribute('data-etapa');
+      const row = Number(selected.sheetRow); // fila real en la hoja
+      // Optimista: actualizamos UI ya y disparamos update
+      selected.etapa = nueva;
+      selected.fechaEtapa = new Date().toISOString().slice(0,10);
+      render();
+      closeModal(actionsModal);
+
+      await authUpdateRow(row, nueva);
+      showToast('Etapa actualizada');
+    });
+  });
+
+  // Restaurar sesión si existía
+  if(localStorage.getItem('db_admin')==='1'){
+    isAdmin=true; document.getElementById('loginBtn').textContent='Salir';
   }
-}
 
-/* ===== Init ===== */
-window.addEventListener('DOMContentLoaded', ()=>{
-  ensureEditor();
-  $('#btnRefresh').addEventListener('click', loadData);
-  $('#btnToggleEdit').addEventListener('click', toggleEdit);
-  $('#search').addEventListener('input', render);
-  $('#filterEtapa').addEventListener('change', render);
+  // GO
   loadData();
-});
 </script>
 </body>
 </html>
