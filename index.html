@@ -3,46 +3,79 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Seguimiento de Productos</title>
+  <title>Seguimiento de Productos — Docentes Brown</title>
   <style>
-    :root{ --bg:#f7f7f7; --card:#fff; --ink:#1f2a37; --muted:#64748b; --brand:#24496e; --accent:#ef9963; }
-    *{box-sizing:border-box} html,body{height:100%; background:var(--bg); color:var(--ink); font-family:Arial,Helvetica,sans-serif}
-    body{margin:0; display:flex; flex-direction:column}
-    header{position:sticky; top:0; z-index:10; display:flex; gap:.5rem; align-items:center; justify-content:space-between; padding:.75rem .9rem; background:#fff; border-bottom:1px solid #e5e7eb}
-    header .left{display:flex; align-items:center; gap:.6rem}
-    header .brand{display:inline-flex; width:34px; height:34px; border-radius:8px; background:var(--brand); color:#fff; align-items:center; justify-content:center; font-weight:900}
-    header .actions{display:flex; gap:.4rem; align-items:center}
-    button{border:1px solid #e5e7eb; background:#fff; color:var(--ink); padding:.5rem .8rem; border-radius:.6rem; font-weight:600; cursor:pointer}
-    button.primary{background:var(--brand); border-color:var(--brand); color:#fff}
-    button.btn-sm{padding:.25rem .45rem; font-size:.85rem}
-    main{padding:.8rem .9rem 2.5rem}
-    .toolbar{display:flex; gap:.5rem; flex-wrap:wrap; margin-bottom:.75rem}
-    .toolbar input[type="search"], .toolbar select{padding:.55rem .7rem; border:1px solid #e5e7eb; border-radius:.6rem; background:#fff}
-    .pill{font-size:.75rem; background:#f8fafc; border:1px solid #e5e7eb; border-radius:999px; padding:.15rem .5rem; color:var(--muted)}
-    .alert{margin:.6rem 0; padding:.6rem .8rem; border-radius:.6rem; border:1px solid #fecaca; background:#fff1f2; color:#7f1d1d; display:none}
-    .banner{position:sticky; top:3.2rem; background:#fff7ed; border:1px solid #fed7aa; color:#7c2d12; padding:.6rem .8rem; border-radius:.6rem; margin-bottom:.7rem; display:none}
-    .grid{display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap:.7rem}
-    @media (min-width: 960px){ .grid{grid-template-columns: repeat(4, minmax(0, 1fr));} }
-    .card{background:var(--card); border:1px solid #e5e7eb; border-radius:.9rem; padding:.9rem; display:flex; flex-direction:column; gap:.5rem; min-height:140px}
-    .row{display:flex; gap:.4rem; align-items:center; justify-content:space-between}
-    .stage{display:inline-flex; align-items:center; gap:.35rem; border-radius:.6rem; padding:.2rem .5rem; background:#f1f5f9; border:1px dashed #e2e8f0; font-weight:600}
-    .kv{display:flex; gap:.5rem; align-items:center; font-size:.9rem; color:var(--muted); flex-wrap:wrap}
-    .mono{font-family: ui-monospace, SFMono-Regular, Menlo, monospace; background:#f8fafc; border:1px solid #e2e8f0; border-radius:.4rem; padding:.15rem .4rem}
-    .cta{display:flex; gap:.5rem; margin-top:.2rem; flex-wrap:wrap}
-    .wa{display:inline-flex; align-items:center; gap:.35rem; text-decoration:none; border:1px solid #22c55e; color:#14532d; background:#dcfce7; border-radius:.6rem; padding:.45rem .65rem; font-weight:700}
+    :root{
+      --bg:#f3efdc; --card:#ffffff; --ink:#1f2937; --muted:#6b7280;
+      --brand:#24496e; --brand-2:#1b3550; --accent:#ef9963; --ok:#16a34a; --ring:rgba(36,73,110,.2);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial}
+    body{margin:0;display:flex;flex-direction:column}
+
+    /* Header Docentes Brown */
+    header{
+      position:sticky;top:0;z-index:20;
+      background:linear-gradient(180deg,#fff,rgba(255,255,255,.92));
+      border-bottom:1px solid #e5e7eb; backdrop-filter: blur(6px);
+      padding:.75rem .9rem; display:flex; align-items:center; justify-content:space-between; gap:.5rem;
+    }
+    .brandMark{display:inline-flex;width:36px;height:36px;border-radius:10px;background:var(--brand);
+      color:#fff;align-items:center;justify-content:center;font-weight:900;box-shadow:0 3px 8px rgba(36,73,110,.25)}
+    .hd-title{line-height:1}
+    .hd-sub{font-size:.80rem;color:var(--muted)}
+    .actions{display:flex;gap:.45rem}
+    button{
+      border:1px solid #e5e7eb;background:#fff;color:var(--ink);
+      padding:.5rem .8rem;border-radius:.7rem;font-weight:700;cursor:pointer
+    }
+    button.primary{background:var(--brand);border-color:var(--brand);color:#fff}
+    button:focus{outline:none;box-shadow:0 0 0 3px var(--ring)}
+    button.btn-sm{padding:.25rem .45rem;font-size:.85rem;border-radius:.5rem}
+
+    main{padding:.85rem .9rem 2.8rem}
+
+    .toolbar{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.75rem}
+    .toolbar input[type="search"], .toolbar select{
+      padding:.6rem .75rem;border:1px solid #e5e7eb;border-radius:.7rem;background:#fff
+    }
+    .pill{font-size:.75rem;background:#f8fafc;border:1px solid #e5e7eb;border-radius:999px;padding:.15rem .5rem;color:var(--muted)}
+    #roleBadge{margin-left:.4rem}
+
+    .alert{margin:.6rem 0;padding:.6rem .8rem;border-radius:.7rem;border:1px solid #fecaca;background:#fff1f2;color:#7f1d1d;display:none}
+    .banner{position:sticky;top:3.4rem;background:#fff7ed;border:1px solid #fed7aa;color:#7c2d12;padding:.6rem .8rem;border-radius:.7rem;margin-bottom:.7rem;display:none}
+
+    .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem}
+    @media (min-width:960px){.grid{grid-template-columns:repeat(4,minmax(0,1fr));}}
+
+    .card{
+      background:var(--card);border:1px solid #e5e7eb;border-radius:1rem;padding:.9rem;min-height:140px;
+      box-shadow:0 2px 6px rgba(0,0,0,.05);display:flex;flex-direction:column;gap:.55rem
+    }
+    .row{display:flex;align-items:center;justify-content:space-between;gap:.5rem}
+    .name{font-weight:800;letter-spacing:.2px}
+    .stage{
+      display:inline-flex;align-items:center;gap:.35rem;border-radius:.6rem;padding:.25rem .55rem;
+      background:#eff6ff;border:1px dashed #dbeafe;font-weight:700;color:var(--brand-2)
+    }
+    .kv{display:flex;gap:.5rem;align-items:center;font-size:.9rem;color:var(--muted);flex-wrap:wrap}
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;background:#f8fafc;border:1px solid #e2e8f0;border-radius:.4rem;padding:.15rem .4rem}
+    .cta{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.15rem}
+    .wa{display:inline-flex;align-items:center;gap:.35rem;text-decoration:none;border:1px solid #22c55e;color:#14532d;background:#dcfce7;border-radius:.7rem;padding:.45rem .65rem;font-weight:800}
     .hidden{display:none !important}
   </style>
 </head>
 <body>
   <header>
-    <div class="left">
-      <span class="brand">DB</span>
-      <div>
-        <div style="font-weight:700">Seguimiento de Productos</div>
-        <div id="roleBadge" class="pill hidden">Editor</div>
+    <div style="display:flex;align-items:center;gap:.6rem">
+      <span class="brandMark">DB</span>
+      <div class="hd-title">
+        <div style="font-weight:900;color:var(--brand-2)">Docentes Brown</div>
+        <div class="hd-sub">Seguimiento de productos</div>
       </div>
     </div>
     <div class="actions">
+      <span id="roleBadge" class="pill hidden">Editor</span>
       <button id="btnRefresh" title="Recargar">Recargar</button>
       <button id="btnToggleEdit" class="primary" title="Cambiar a modo editor">Modo editor</button>
     </div>
@@ -51,26 +84,29 @@
   <main>
     <div id="staleBanner" class="banner"></div>
     <div id="appAlert" class="alert"></div>
+
     <div class="toolbar">
       <input id="search" type="search" placeholder="Buscar por nombre, etapa o seguimiento…" />
       <select id="filterEtapa">
         <option value="__ALL__">Todas las etapas</option>
       </select>
     </div>
+
     <div id="grid" class="grid" aria-live="polite"></div>
   </main>
 
 <script>
+/* ===== CONFIG (forzado para columnas correctas) ===== */
 const CONFIG = {
-  CSV_URL: "https://docs.google.com/spreadsheets/d/e/2PACX-1vT-9IeM2BVQBw1SQEkbdmmp2yLMVzG-4krVRmc-JdWb6BIX4MSTLVL8DbYyGbm864ChHRvICrsad7Hi/pub?output=csv",
   APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbx4vUDQ9Z1cbBYzt2Tlqq3yO8hNAXPmqb_bZ6AY9q1EYKc5M3D7CBGC4WA6aszDjWu1RQ/exec",
   HAS_HEADER: true,
+  FORCE_COLS: true, // evita autodetección; usamos índices fijos
+  // 0-index: A=0 ... Z=25, AA=26, AB=27
   COL: { NOMBRE:2, TELEFONO:3, CONTACTO:5, ETAPA:25, ULTIMA:27, SEGUIM:26 },
-  AUTH: { user: "DOCENTESBROWN", pass: "NestorVive" }
+  AUTH: { user:"DOCENTESBROWN", pass:"NestorVive" }
 };
 
 let RAW_ROWS = [];
-let VIEW_ROWS = [];
 let UNIQUE_ETAPAS = new Set();
 let isEditor = false;
 
@@ -87,11 +123,12 @@ const sanitizePhoneForWA = (raw)=>{
 };
 const formatDaysAgo = (iso)=>{ try{ const d=new Date(iso); if(isNaN(d)) return null; return Math.floor((Date.now()-d)/(1000*60*60*24)); }catch{ return null; } };
 
+// JSONP (sin CORS) para leer datos
 function jsonp(url, timeout=8000){
   return new Promise((resolve, reject)=>{
     const cb = "__jsonp_cb_" + Math.random().toString(36).slice(2);
     const t = setTimeout(()=>{ cleanup(); reject(new Error("JSONP timeout")); }, timeout);
-    function cleanup(){ clearTimeout(t); delete window[cb]; script.remove(); }
+    function cleanup(){ clearTimeout(t); delete window[cb]; if(script && script.parentNode) script.parentNode.removeChild(script); }
     window[cb] = (data)=>{ cleanup(); resolve(data); };
     const script = document.createElement('script');
     script.src = url + (url.includes('?') ? '&' : '?') + 'callback=' + cb;
@@ -102,23 +139,8 @@ function jsonp(url, timeout=8000){
 
 async function fetchSheet(){
   try{ const r = await fetch(CONFIG.APPS_SCRIPT_URL + "?action=sheet", { cache:"no-store" }); if(r.ok) return await r.json(); }catch{}
-  try{ return await jsonp(CONFIG.APPS_SCRIPT_URL + "?action=sheet"); }catch{}
-  const txt = await fetch(CONFIG.CSV_URL).then(r=>r.text());
-  const rows = txt.trim().split("\n").map(l=>l.split(","));
-  return { ok:true, rows };
-}
-
-function detectCols(header){
-  const low = header.map(h=>String(h||"").toLowerCase());
-  const col = {...CONFIG.COL};
-  const find = (kw)=> low.findIndex(h => kw.some(k=> h.includes(k)));
-  const idxNom = find(["nombre", "producto"]); if(idxNom>=0) col.NOMBRE = idxNom;
-  const idxTel = find(["cel", "tel"]); if(idxTel>=0) col.TELEFONO = idxTel;
-  const idxMail = find(["contact", "mail", "email"]); if(idxMail>=0) col.CONTACTO = idxMail;
-  const idxEtp = find(["etapa"]); if(idxEtp>=0) col.ETAPA = idxEtp;
-  const idxUlt = find(["ultima", "actualiz"]); if(idxUlt>=0) col.ULTIMA = idxUlt;
-  const idxSeg = find(["seguim"]); if(idxSeg>=0) col.SEGUIM = idxSeg;
-  CONFIG.COL = col;
+  // fallback sin CORS
+  return await jsonp(CONFIG.APPS_SCRIPT_URL + "?action=sheet");
 }
 
 async function loadData(){
@@ -127,25 +149,37 @@ async function loadData(){
     const js = await fetchSheet();
     if(!(js && js.ok && Array.isArray(js.rows) && js.rows.length)) throw new Error("Sin filas");
     const rows = js.rows.slice();
-    if(CONFIG.HAS_HEADER){ const header = rows.shift(); detectCols(header); }
-    RAW_ROWS = rows; VIEW_ROWS = rows.map((r,i)=>({ r, i }));
+    if(CONFIG.HAS_HEADER){ rows.shift(); } // NO auto-detectar columnas
+    RAW_ROWS = rows;
     UNIQUE_ETAPAS = new Set(rows.map(r=>r[CONFIG.COL.ETAPA]).filter(Boolean));
-    buildEtapaFilter(); render(); if(isEditor) checkStale();
-  }catch(err){ console.error(err); showAlert("❌ Error cargando datos: " + (err && err.message ? err.message : err)); }
+    buildEtapaFilter();
+    render();
+    if(isEditor) checkStale();
+  }catch(err){ console.error(err); showAlert("❌ Error cargando datos: " + (err?.message || err)); }
 }
 
 function buildEtapaFilter(){
-  const sel=$('#filterEtapa'); sel.innerHTML='<option value="__ALL__">Todas las etapas</option>';
-  Array.from(UNIQUE_ETAPAS).sort((a,b)=>String(a).localeCompare(String(b))).forEach(v=>{ const opt=document.createElement('option'); opt.value=v; opt.textContent=v; sel.appendChild(opt); });
+  const sel=$('#filterEtapa');
+  sel.innerHTML='<option value="__ALL__">Todas las etapas</option>';
+  Array.from(UNIQUE_ETAPAS).sort((a,b)=>String(a).localeCompare(String(b))).forEach(v=>{
+    const opt=document.createElement('option'); opt.value=v; opt.textContent=v; sel.appendChild(opt);
+  });
   sel.value="__ALL__";
 }
 
 function render(){
   const q=$('#search').value.toLowerCase().trim();
-  const f=$('#filterEtapa').value||"__ALL__";
+  const f=$('#filterEtapa').value || "__ALL__";
   const grid=$('#grid'); grid.innerHTML='';
-  VIEW_ROWS.filter(({r})=>{ const nom=String(r[CONFIG.COL.NOMBRE]||'').toLowerCase(); const etp=String(r[CONFIG.COL.ETAPA]||''); const seg=String(r[CONFIG.COL.SEGUIM]||'').toLowerCase(); const okQ=!q||nom.includes(q)||etp.toLowerCase().includes(q)||seg.includes(q); const okF=(f==="__ALL__")||etp===f; return okQ&&okF; })
-    .forEach(({r,i})=>{
+  RAW_ROWS
+    .filter(r=>{
+      const nom=String(r[CONFIG.COL.NOMBRE]||'').toLowerCase();
+      const etp=String(r[CONFIG.COL.ETAPA]||''); const seg=String(r[CONFIG.COL.SEGUIM]||'').toLowerCase();
+      const okQ=!q || nom.includes(q) || etp.toLowerCase().includes(q) || seg.includes(q);
+      const okF=(f==="__ALL__") || etp===f;
+      return okQ && okF;
+    })
+    .forEach((r,i)=>{
       const name=r[CONFIG.COL.NOMBRE]||'(sin nombre)';
       const etapa=r[CONFIG.COL.ETAPA]||'(sin etapa)';
       const tel=r[CONFIG.COL.TELEFONO]||'';
@@ -153,10 +187,12 @@ function render(){
       const ultima=r[CONFIG.COL.ULTIMA]||'';
       const seg=r[CONFIG.COL.SEGUIM]||'';
       const days=ultima?formatDaysAgo(ultima):null;
-      const card=document.createElement('article'); card.className='card';
+
+      const card=document.createElement('article');
+      card.className='card';
       card.innerHTML = `
         <div class="row">
-          <div style="font-weight:700" title="${name}">${name}</div>
+          <div class="name" title="${name}">${name}</div>
           <span class="stage">${etapa}</span>
         </div>
         <div class="kv"><strong>Seguimiento:</strong> <code class="mono">${seg || '—'}</code> ${seg ? '<button class="btn-sm copy">Copiar</button>' : ''}</div>
@@ -165,41 +201,103 @@ function render(){
           <a class="wa" target="_blank" rel="noopener" href="https://wa.me/${sanitizePhoneForWA(tel)}?text=${encodeURIComponent(`Hola ${name}, te escribimos de Docentes Brown. Tu Agenda está en la etapa: ${etapa}.`)}">WhatsApp</a>
           <button class="btn-sm btnEdit" ${isEditor?'':'disabled'}>Cambiar etapa</button>
         </div>`;
-      const copy=card.querySelector('.copy'); if(copy) copy.addEventListener('click', (e)=>{ e.stopPropagation(); if(seg) navigator.clipboard?.writeText(seg).catch(()=>{}); });
-      const btnE=card.querySelector('.btnEdit'); btnE.addEventListener('click',(ev)=>{ ev.stopPropagation(); if(!isEditor) return; openStage(i,etapa); });
+
+      const copy=card.querySelector('.copy');
+      if(copy){ copy.addEventListener('click', (e)=>{ e.stopPropagation(); if(seg) navigator.clipboard?.writeText(seg).catch(()=>{}); }); }
+
+      const btnE=card.querySelector('.btnEdit');
+      btnE.addEventListener('click',(ev)=>{ ev.stopPropagation(); if(!isEditor) return; openStage(i,etapa); });
       card.addEventListener('click', ()=>{ if(isEditor) openStage(i,etapa); });
+
       grid.appendChild(card);
     });
 }
 
-function openStage(rowIdx, current){ const next=prompt("Nueva etapa:", current||""); if(next==null) return; saveStage(rowIdx, next.trim()); }
+function openStage(rowIdx, current){
+  const next = prompt("Nueva etapa:", current || "");
+  if(next==null) return;
+  saveStage(rowIdx, next.trim());
+}
 
 async function saveStage(rowIdx, newStage){
   if(!newStage) return;
-  const r=RAW_ROWS[rowIdx]; const prev=r[CONFIG.COL.ETAPA]; r[CONFIG.COL.ETAPA]=newStage;
-  const name=r[CONFIG.COL.NOMBRE]||''; const email=r[CONFIG.COL.CONTACTO]||''; const rowNumber=CONFIG.HAS_HEADER?(rowIdx+2):(rowIdx+1);
+  const r = RAW_ROWS[rowIdx]; const prev = r[CONFIG.COL.ETAPA];
+  r[CONFIG.COL.ETAPA] = newStage;
+  const name = r[CONFIG.COL.NOMBRE] || '';
+  const email = r[CONFIG.COL.CONTACTO] || '';
+  const rowNumber = CONFIG.HAS_HEADER ? (rowIdx + 2) : (rowIdx + 1); // +1 por 1-index, +1 por encabezado
+
   render();
   try{
-    const body=new URLSearchParams({ action:"updateStage", rowNumber:String(rowNumber), newStage, name, email, user:CONFIG.AUTH.user, pass:CONFIG.AUTH.pass });
-    const res=await fetch(CONFIG.APPS_SCRIPT_URL, { method:"POST", headers:{"Content-Type":"application/x-www-form-urlencoded;charset=UTF-8"}, body });
-    const js=await res.json();
-    if(js && js.ok){ r[CONFIG.COL.ULTIMA]=new Date().toISOString(); UNIQUE_ETAPAS.add(newStage); buildEtapaFilter(); render(); }
-    else{ r[CONFIG.COL.ETAPA]=prev; render(); showAlert("❌ Error al actualizar: " + (js && js.error ? js.error : "desconocido")); }
-  }catch(err){ r[CONFIG.COL.ETAPA]=prev; render(); showAlert("❌ Fallo de red guardando: " + (err && err.message ? err.message : err)); }
+    const body = new URLSearchParams({
+      action:"updateStage", rowNumber:String(rowNumber), newStage, name, email,
+      user:CONFIG.AUTH.user, pass:CONFIG.AUTH.pass
+    });
+    const res = await fetch(CONFIG.APPS_SCRIPT_URL, {
+      method:"POST", headers:{ "Content-Type":"application/x-www-form-urlencoded;charset=UTF-8" }, body
+    });
+    const js = await res.json();
+    if(js && js.ok){
+      r[CONFIG.COL.ULTIMA] = new Date().toISOString(); // reflejar AB en UI
+      UNIQUE_ETAPAS.add(newStage); buildEtapaFilter(); render();
+    }else{
+      r[CONFIG.COL.ETAPA] = prev; render();
+      showAlert("❌ Error al actualizar: " + (js?.error || "desconocido"));
+    }
+  }catch(err){
+    r[CONFIG.COL.ETAPA] = prev; render();
+    showAlert("❌ Fallo de red guardando: " + (err?.message || err));
+  }
 }
 
 function checkStale(){
-  const stale=RAW_ROWS.map((r)=>({ name:r[CONFIG.COL.NOMBRE], stage:r[CONFIG.COL.ETAPA], days:r[CONFIG.COL.ULTIMA]?formatDaysAgo(r[CONFIG.COL.ULTIMA]):null })).filter(o=>o.days!=null && o.days>=7);
+  const stale = RAW_ROWS.map((r)=>({
+    name:r[CONFIG.COL.NOMBRE], stage:r[CONFIG.COL.ETAPA],
+    days:r[CONFIG.COL.ULTIMA]?formatDaysAgo(r[CONFIG.COL.ULTIMA]):null
+  })).filter(o=>o.days!=null && o.days>=7);
+
   const banner=$('#staleBanner');
-  if(stale.length){ banner.style.display='block'; banner.textContent="⚠️ Pedidos estancados: " + stale.map(s=>`${s.name} (${s.stage}, ${s.days} días)`).join("; ");
-    if("Notification" in window){ Notification.requestPermission().then(st=>{ if(st==="granted") stale.slice(0,3).forEach(s=> new Notification("Pedido estancado", { body:`${s.name} sigue ${s.days} días en etapa: ${s.stage}` })); }); }
-  }else{ banner.style.display='none'; banner.textContent=''; }
+  if(stale.length){
+    banner.style.display='block';
+    banner.textContent = "⚠️ Pedidos estancados: " + stale.map(s=>`${s.name} (${s.stage}, ${s.days} días)`).join("; ");
+    if("Notification" in window){
+      Notification.requestPermission().then(st=>{
+        if(st==="granted"){
+          stale.slice(0,3).forEach(s=> new Notification("Pedido estancado", { body:`${s.name} sigue ${s.days} días en etapa: ${s.stage}` }));
+        }
+      });
+    }
+  }else{
+    banner.style.display='none'; banner.textContent='';
+  }
 }
 
-function ensureEditor(){ isEditor = localStorage.getItem("editor")==="1"; $('#roleBadge').classList.toggle('hidden', !isEditor); $('#btnToggleEdit').textContent = isEditor ? "Salir de editor" : "Modo editor"; render(); }
-function toggleEdit(){ if(isEditor){ localStorage.removeItem("editor"); ensureEditor(); } else { const u=prompt("Usuario:"); const p=u!=null?prompt("Clave:"):null; if(u===null||p===null) return; if(u===CONFIG.AUTH.user && p===CONFIG.AUTH.pass){ localStorage.setItem("editor","1"); ensureEditor(); checkStale(); } else alert("Credenciales incorrectas"); } }
+/* ===== Auth editor ===== */
+function ensureEditor(){
+  isEditor = localStorage.getItem("editor")==="1";
+  $('#roleBadge').classList.toggle('hidden', !isEditor);
+  $('#btnToggleEdit').textContent = isEditor ? "Salir de editor" : "Modo editor";
+  render();
+}
+function toggleEdit(){
+  if(isEditor){ localStorage.removeItem("editor"); ensureEditor(); }
+  else{
+    const u = prompt("Usuario:"); const p = u!=null ? prompt("Clave:") : null;
+    if(u===null || p===null) return;
+    if(u==="DOCENTESBROWN" && p==="NestorVive"){ localStorage.setItem("editor","1"); ensureEditor(); checkStale(); }
+    else alert("Credenciales incorrectas");
+  }
+}
 
-window.addEventListener('DOMContentLoaded', ()=>{ ensureEditor(); $('#btnRefresh').addEventListener('click', loadData); $('#btnToggleEdit').addEventListener('click', toggleEdit); $('#search').addEventListener('input', render); $('#filterEtapa').addEventListener('change', render); loadData(); });
+/* ===== Init ===== */
+window.addEventListener('DOMContentLoaded', ()=>{
+  ensureEditor();
+  $('#btnRefresh').addEventListener('click', loadData);
+  $('#btnToggleEdit').addEventListener('click', toggleEdit);
+  $('#search').addEventListener('input', render);
+  $('#filterEtapa').addEventListener('change', render);
+  loadData();
+});
 </script>
 </body>
 </html>
