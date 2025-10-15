@@ -1,13 +1,14 @@
 <!DOCTYPE html>
+
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-  <title>Seguimiento de Productos — Docentes Brown</title>
-  <meta name="theme-color" content="#24496e"/>
-  <link rel="manifest" href="manifest.webmanifest">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%2324496e'/><text x='50' y='58' font-family='Arial' font-size='58' text-anchor='middle' fill='white'>DB</text></svg>">
-  <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1, maximum-scale=1" name="viewport"/>
+<title>Seguimiento de Productos — Docentes Brown</title>
+<meta content="#24496e" name="theme-color"/>
+<link href="manifest.webmanifest" rel="manifest"/>
+<link href="data:image/svg+xml,&lt;svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'&gt;&lt;circle cx='50' cy='50' r='50' fill='%2324496e'/&gt;&lt;text x='50' y='58' font-family='Arial' font-size='58' text-anchor='middle' fill='white'&gt;DB&lt;/text&gt;&lt;/svg&gt;" rel="icon"/>
+<style>
     :root{
       --bg:#f3efdc;
       --card:#ffffff;
@@ -87,68 +88,62 @@
   </style>
 </head>
 <body>
-  <header>
-    <div class="title">
-      <span style="display:inline-flex;width:34px;height:34px;border-radius:10px;background:var(--brand);color:#fff;align-items:center;justify-content:center;font-weight:900">DB</span>
-      <div>
-        <div>Seguimiento de Productos</div>
-        <div class="hint">Vista pública · Editar requiere credenciales</div>
-      </div>
-    </div>
-    <div class="actions">
-      <button id="btnRefresh" title="Recargar">Recargar</button>
-      <button id="btnToggleEdit" class="primary" title="Cambiar a modo editor">Modo editor</button>
-    </div>
-  </header>
-
-  <main>
-    <div id="staleBanner" class="banner"></div>
-    <div class="toolbar">
-      <input id="search" type="search" placeholder="Buscar por nombre, etapa o seguimiento…" />
-      <select id="filterEtapa">
-        <option value="">Filtrar por etapa</option>
-      </select>
-      <span id="badgeEdit" class="pill hidden">Editor</span>
-    </div>
-    <div id="grid" class="grid" aria-live="polite"></div>
-  </main>
-
-  <!-- Modals -->
-  <dialog id="loginDialog">
-    <form method="dialog" class="modal" id="loginForm">
-      <h2>Ingresar como editor</h2>
-      <div class="form-row"><label>Usuario</label><input id="user" autocomplete="username" required></div>
-      <div class="form-row"><label>Clave</label><input id="pass" type="password" autocomplete="current-password" required></div>
-      <div class="actions">
-        <button value="cancel">Cancelar</button>
-        <button class="primary" id="btnLogin">Ingresar</button>
-      </div>
-      <p class="hint">Requerido para cambiar etapas y notificar.</p>
-    </form>
-  </dialog>
-
-  <dialog id="stageDialog">
-    <form method="dialog" class="modal" id="stageForm">
-      <h2>Cambiar etapa</h2>
-      <div class="form-row">
-        <label for="stageSelect">Nueva etapa</label>
-        <select id="stageSelect"></select>
-        <input id="stageCustom" class="hidden" placeholder="Escribe nueva etapa…"/>
-      </div>
-      <div class="actions">
-        <button value="cancel">Cancelar</button>
-        <button class="primary" id="btnSaveStage">Guardar</button>
-      </div>
-      <input type="hidden" id="rowIndex" />
-    </form>
-  </dialog>
-
-  <div id="toast" class="toast hidden" role="status" aria-live="assertive"></div>
-
-  <!-- PapaParse for robust CSV parsing -->
-  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js" defer></script>
-
-  <script>
+<header>
+<div class="title">
+<span style="display:inline-flex;width:34px;height:34px;border-radius:10px;background:var(--brand);color:#fff;align-items:center;justify-content:center;font-weight:900">DB</span>
+<div>
+<div>Seguimiento de Productos</div>
+<div class="hint">Vista pública · Editar requiere credenciales</div>
+</div>
+</div>
+<div class="actions">
+<button id="btnRefresh" title="Recargar">Recargar</button>
+<button class="primary" id="btnToggleEdit" title="Cambiar a modo editor">Modo editor</button>
+</div>
+</header>
+<main>
+<div class="banner" id="staleBanner"></div>
+<div class="toolbar">
+<input id="search" placeholder="Buscar por nombre, etapa o seguimiento…" type="search"/>
+<select id="filterEtapa">
+<option value="__ALL__">Todas las etapas</option>
+</select>
+<span class="pill hidden" id="badgeEdit">Editor</span>
+</div>
+<div aria-live="polite" class="grid" id="grid"></div>
+</main>
+<!-- Modals -->
+<dialog id="loginDialog">
+<form class="modal" id="loginForm" method="dialog">
+<h2>Ingresar como editor</h2>
+<div class="form-row"><label>Usuario</label><input autocomplete="username" id="user" required=""/></div>
+<div class="form-row"><label>Clave</label><input autocomplete="current-password" id="pass" required="" type="password"/></div>
+<div class="actions">
+<button value="cancel">Cancelar</button>
+<button class="primary" id="btnLogin">Ingresar</button>
+</div>
+<p class="hint">Requerido para cambiar etapas y notificar.</p>
+</form>
+</dialog>
+<dialog id="stageDialog">
+<form class="modal" id="stageForm" method="dialog">
+<h2>Cambiar etapa</h2>
+<div class="form-row">
+<label for="stageSelect">Nueva etapa</label>
+<select id="stageSelect"></select>
+<input class="hidden" id="stageCustom" placeholder="Escribe nueva etapa…">
+</input></div>
+<div class="actions">
+<button value="cancel">Cancelar</button>
+<button class="primary" id="btnSaveStage">Guardar</button>
+</div>
+<input id="rowIndex" type="hidden">
+</input></form>
+</dialog>
+<div aria-live="assertive" class="toast hidden" id="toast" role="status"></div>
+<!-- PapaParse for robust CSV parsing -->
+<script defer="" src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+<script>
   // ========= CONFIG =========
   const CONFIG = {
     CSV_URL: "https://docs.google.com/spreadsheets/d/e/2PACX-1vT-9IeM2BVQBw1SQEkbdmmp2yLMVzG-4krVRmc-JdWb6BIX4MSTLVL8DbYyGbm864ChHRvICrsad7Hi/pub?output=csv",
@@ -247,22 +242,87 @@
 
   // ========= RENDER =========
   function buildEtapaFilter(){
-    const sel = $('#filterEtapa');
-    sel.innerHTML = '<option value="">Filtrar por etapa</option>';
-    Array.from(UNIQUE_ETAPAS).sort((a,b)=>String(a).localeCompare(String(b))).forEach(v=>{
-      const opt = document.createElement('option');
-      opt.value = v; opt.textContent = v;
-      sel.appendChild(opt);
-    });
+  const sel = $('#filterEtapa');
+  sel.innerHTML = '<option value="__ALL__">Todas las etapas</option>';
+  Array.from(UNIQUE_ETAPAS).sort((a,b)=>String(a).localeCompare(String(b))).forEach(v=>{
+    const opt = document.createElement('option');
+    opt.value = v; opt.textContent = v;
+    sel.appendChild(opt);
+  });
+  sel.value = "__ALL__";
+});
   }
 
   function render(){
-    const q = $('#search').value.toLowerCase().trim();
-    const f = $('#filterEtapa').value;
-    const grid = $('#grid');
-    grid.innerHTML = '';
-    VIEW_ROWS
-      .filter(({r})=>{
+  const q = $('#search').value.toLowerCase().trim();
+  const f = $('#filterEtapa').value || "__ALL__";
+  const grid = $('#grid');
+  grid.innerHTML = '';
+  VIEW_ROWS
+    .filter(({r})=>{
+      const nom = String(r[CONFIG.COL.NOMBRE]||'').toLowerCase();
+      const etp = String(r[CONFIG.COL.ETAPA]||'');
+      const seg = String(r[CONFIG.COL.SEGUIMIENTO]||'').toLowerCase();
+      const okQ = !q || nom.includes(q) || etp.toLowerCase().includes(q) || seg.includes(q);
+      const okF = (f === "__ALL__") || etp === f;
+      return okQ && okF;
+    })
+    .forEach(({r, i})=>{
+      const name = r[CONFIG.COL.NOMBRE] || '(sin nombre)';
+      const etapa = r[CONFIG.COL.ETAPA] || '(sin etapa)';
+      const tel = r[CONFIG.COL.TELEFONO] || '';
+      const email = r[CONFIG.COL.CONTACTO] || '';
+      const ultima = r[CONFIG.COL.ULTIMA_ACT] || '';
+      const seg = r[CONFIG.COL.SEGUIMIENTO] || '';
+      const days = ultima ? formatDaysAgo(ultima) : null;
+
+      const card = document.createElement('article');
+      card.className = 'card';
+      card.innerHTML = `
+        <div class="row">
+          <h3 title="${name}">${name}</h3>
+          <span class="stage"><span class="stage dot" aria-hidden="true"></span><span>${etapa}</span></span>
+        </div>
+        <div class="kv"><strong>Seguimiento:</strong> <code class="mono">${seg || '—'}</code> ${seg ? '<button class="copy btn-sm" title="Copiar número">Copiar</button>' : ''}</div>
+        <div class="kv"><strong>Últ. act.:</strong> ${ultima ? new Date(ultima).toLocaleDateString() : '—'} ${(days!=null)?`<span class="pill">${days} días</span>`:''}</div>
+        <div class="cta">
+          <a class="wa" target="_blank" rel="noopener" href="https://wa.me/${sanitizePhoneForWA(tel)}?text=${encodeURIComponent(`Hola ${name}, te escribimos de Docentes Brown. Tu Agenda está en etapa: ${etapa}.`)}" title="Enviar WhatsApp">
+            <svg viewBox="0 0 32 32" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M19.11 17.33c-.27-.14-1.57-.77-1.82-.86-.24-.09-.42-.14-.6.14-.17.27-.69.86-.84 1.03-.15.17-.31.2-.58.07-.27-.14-1.13-.42-2.16-1.33-.8-.71-1.33-1.58-1.49-1.85-.15-.27-.02-.42.11-.55.11-.1.27-.27.4-.41.13-.14.17-.24.27-.41.09-.17.05-.31-.02-.45-.07-.14-.6-1.45-.82-1.99-.22-.52-.44-.45-.6-.45-.15 0-.33-.02-.51-.02-.18 0-.46.07-.7.33-.24.27-.92.9-.92 2.2 0 1.3.95 2.55 1.09 2.73.13.17 1.88 2.87 4.56 4.03.64.28 1.15.45 1.54.58.65.21 1.24.18 1.7.11.52-.08 1.57-.64 1.79-1.25.22-.62.22-1.15.15-1.25-.06-.11-.24-.17-.51-.31z"/><path d="M16 3C9.382 3 4 8.382 4 15c0 2.515.84 4.833 2.258 6.702L4 29l7.46-2.2C13.397 27.59 14.665 28 16 28c6.618 0 12-5.382 12-12S22.618 3 16 3zm0 22.5c-1.148 0-2.226-.235-3.21-.659l-.23-.1-4.42 1.304 1.359-4.33-.114-.236A8.45 8.45 0 0 1 7.5 15c0-4.694 3.806-8.5 8.5-8.5s8.5 3.806 8.5 8.5-3.806 8.5-8.5 8.5z"/></svg>
+            WhatsApp
+          </a>
+          <button class="btnChangeStage" ${isEditor?'':'disabled'}>Cambiar etapa</button>
+        </div>
+      `;
+
+      const copyBtn = card.querySelector('.copy');
+      if(copyBtn){
+        copyBtn.addEventListener('click', (e)=>{
+          e.stopPropagation();
+          if(!seg){ showToast('No hay número de seguimiento'); return; }
+          navigator.clipboard?.writeText(seg).then(()=> showToast('Número copiado')).catch(()=>{
+            const ta = document.createElement('textarea');
+            ta.value = seg; document.body.appendChild(ta); ta.select();
+            try{ document.execCommand('copy'); showToast('Número copiado'); } finally{ document.body.removeChild(ta); }
+          });
+        });
+      }
+
+      const changeBtn = card.querySelector('.btnChangeStage');
+      changeBtn.addEventListener('click', (ev)=>{
+        ev.stopPropagation();
+        if(!isEditor) { showToast("Ingresa como editor para editar."); return; }
+        openStageDialog(i, etapa);
+      });
+
+      // Permitir tap en toda la tarjeta para cambiar etapa si es editor
+      card.addEventListener('click', ()=>{
+        if(!isEditor) return;
+        openStageDialog(i, etapa);
+      });
+
+      grid.appendChild(card);
+    });
+})=>{
         const nom = String(r[CONFIG.COL.NOMBRE]||'').toLowerCase();
         const etp = String(r[CONFIG.COL.ETAPA]||'');
         const seg = String(r[CONFIG.COL.SEGUIMIENTO]||'').toLowerCase();
@@ -458,8 +518,13 @@
 
   // ========= AUTH / UI EVENTS =========
   function ensureEditor(){
-    const stored = localStorage.getItem("db_editor");
-    if(stored === "1"){ isEditor = true; $('#badgeEdit').classList.remove('hidden'); }
+  const stored = localStorage.getItem("db_editor");
+  if(stored === "1"){ isEditor = true; $('#badgeEdit').classList.remove('hidden'); }
+  else { isEditor = false; $('#badgeEdit').classList.add('hidden'); }
+  $('#btnToggleEdit').textContent = isEditor ? "Salir de editor" : "Modo editor";
+  // Si ya hay datos cargados, re-renderizar para habilitar/deshabilitar botones
+  if(RAW_ROWS && RAW_ROWS.length){ try{ render(); }catch{} }
+}
     else { isEditor = false; $('#badgeEdit').classList.add('hidden'); }
     $('#btnToggleEdit').textContent = isEditor ? "Salir de editor" : "Modo editor";
   }
@@ -472,15 +537,20 @@
   }
 
   function login(){
-    const u = $('#user').value.trim();
-    const p = $('#pass').value.trim();
-    if(u === CONFIG.AUTH.user && p === CONFIG.AUTH.pass){
-      localStorage.setItem("db_editor","1");
-      ensureEditor();
-      $('#loginDialog').close();
-      showToast("Listo. Modo editor activo.");
-      // Registrar service worker para notificaciones
-      if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catch(()=>{}); }
+  const u = $('#user').value.trim();
+  const p = $('#pass').value.trim();
+  if(u === CONFIG.AUTH.user && p === CONFIG.AUTH.pass){
+    localStorage.setItem("db_editor","1");
+    ensureEditor();
+    $('#loginDialog').close();
+    showToast("Listo. Modo editor activo.");
+    if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catch(()=>{}); }
+    checkStaleAndNotify();
+    try{ render(); }catch{}
+  }else{
+    showToast("Credenciales incorrectas.");
+  }
+}); }
       checkStaleAndNotify();
     }else{
       showToast("Credenciales incorrectas.");
@@ -488,11 +558,15 @@
   }
 
   function toggleEdit(){
-    if(isEditor){
-      localStorage.removeItem("db_editor");
-      ensureEditor();
-      showToast("Saliste del modo editor.");
-    }else{
+  if(isEditor){
+    localStorage.removeItem("db_editor");
+    ensureEditor();
+    showToast("Saliste del modo editor.");
+    try{ render(); }catch{}
+  }else{
+    openLogin();
+  }
+}else{
       openLogin();
     }
   }
