@@ -1,288 +1,171 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-  <title>Seguimiento de Productos — Docentes Brown</title>
-  <meta name="theme-color" content="#24496e"/>
-  <link rel="manifest" href="manifest.webmanifest">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%2324496e'/><text x='50' y='58' font-family='Arial' font-size='58' text-anchor='middle' fill='white'>DB</text></svg>">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Seguimiento de Productos</title>
   <style>
-    :root{
-      --bg:#f3efdc; --card:#ffffff; --ink:#1f2a37; --muted:#64748b; --brand:#24496e; --accent:#ef9963; --ring: rgba(36,73,110,.15);
+    body { font-family: Arial, sans-serif; margin: 0; background: #f7f7f7; }
+    .login { max-width: 350px; margin: 50px auto; background: #fff; padding: 2em; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.15);}
+    .container { max-width: 900px; margin: 20px auto; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1em; }
+    @media (max-width: 600px) { .grid { grid-template-columns: 1fr; } }
+    .card {
+      background: #fff; padding: 1em; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+      display: flex; flex-direction: column; justify-content: space-between; min-height: 120px;
     }
-    *{box-sizing:border-box} html,body{height:100%;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Arial}
-    body{margin:0;display:flex;flex-direction:column}
-    header{position:sticky;top:0;z-index:50;display:flex;gap:.5rem;align-items:center;justify-content:space-between;padding:.75rem .9rem;background:linear-gradient(180deg,#fff,rgba(255,255,255,.85));border-bottom:1px solid #e5e7eb;backdrop-filter: blur(6px)}
-    header .title{display:flex;align-items:center;gap:.6rem;font-weight:700}
-    header .actions{display:flex;gap:.4rem;align-items:center}
-    button{border:1px solid #e5e7eb;background:#fff;color:var(--ink);padding:.55rem .8rem;border-radius:.75rem;font-weight:600;box-shadow:0 1px 2px rgba(0,0,0,.04);cursor:pointer}
-    button.primary{background:var(--brand);border-color:var(--brand);color:#fff}
-    main{padding:.8rem .9rem 5rem}
-    .toolbar{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.75rem}
-    .toolbar input[type="search"], .toolbar select{padding:.6rem .8rem;border:1px solid #e5e7eb;border-radius:.75rem;background:#fff}
-    .pill{font-size:.75rem;background:#f8fafc;border:1px solid #e5e7eb;border-radius:999px;padding:.2rem .5rem;color:var(--muted)}
-    .grid{display:grid;grid-template-columns: repeat(2, minmax(0, 1fr));gap:.7rem}
-    @media (min-width: 960px){ .grid{grid-template-columns: repeat(4, minmax(0, 1fr));} }
-    .card{background:var(--card);border:1px solid #e5e7eb;border-radius:1rem;padding:.9rem;display:flex;flex-direction:column;gap:.5rem;box-shadow:0 2px 6px rgba(0,0,0,.04)}
-    .row{display:flex;gap:.4rem;align-items:center;justify-content:space-between}
-    .stage{display:inline-flex;align-items:center;gap:.35rem;border-radius:.6rem;padding:.25rem .5rem;background:#f1f5f9;border:1px dashed #e2e8f0;font-weight:600}
-    .kv{display:flex;gap:.5rem;align-items:center;font-size:.9rem;color:#64748b;flex-wrap:wrap}
-    .mono{font-family: ui-monospace,SFMono-Regular,Menlo,monospace;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:.5rem;padding:.15rem .4rem}
-    .cta{display:flex;gap:.5rem;margin-top:.2rem;flex-wrap:wrap}
-    .wa{display:inline-flex;align-items:center;gap:.35rem;text-decoration:none;border:1px solid #22c55e;color:#14532d;background:#dcfce7;border-radius:.7rem;padding:.45rem .65rem;font-weight:700}
-    .banner{position:sticky;top:3.2rem;background:#fff7ed;border:1px solid #fed7aa;color:#7c2d12;padding:.6rem .8rem;border-radius:.7rem;margin-bottom:.7rem;display:none}
-    .alert{margin:.6rem 0;padding:.6rem .8rem;border-radius:.7rem;border:1px solid #fecaca;background:#fff1f2;color:#7f1d1d;display:none}
+    .card-title { font-weight: bold; font-size: 1.1em; }
+    .card-stage { margin: 0.5em 0; color: #555; }
+    .card-actions { display: flex; gap: 0.5em; margin-top: 1em; }
+    .btn { border: none; border-radius: 5px; padding: 0.6em 1em; background: #3498db; color: #fff; cursor: pointer; font-size: 1em;}
+    .btn.whatsapp { background: #25d366; }
+    .btn.stage { background: #ff9800; }
+    .logout { float: right; margin: 1em; }
+    .editor-badge { font-size:0.8em; color:#fff; background:#2c3e50; padding:2px 8px; border-radius:5px; margin-left:5px;}
+    .alert { background: #ffeb3b; color: #222; padding: 10px; border-radius: 5px; margin-bottom: 1em; }
   </style>
 </head>
 <body>
-  <header>
-    <div class="title">
-      <span style="display:inline-flex;width:34px;height:34px;border-radius:10px;background:var(--brand);color:#fff;align-items:center;justify-content:center;font-weight:900">DB</span>
-      <div>
-        <div>Seguimiento de Productos</div>
-        <div class="pill" id="badgeEdit" style="display:none">Editor</div>
+  <button class="logout btn" style="display:none" onclick="logout()">Salir</button>
+  <div id="main"></div>
+
+<script>
+const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT-9IeM2BVQBw1SQEkbdmmp2yLMVzG-4krVRmc-JdWb6BIX4MSTLVL8DbYyGbm864ChHRvICrsad7Hi/pub?output=csv";
+const APP_SCRIPT_API_URL = "https://script.google.com/macros/s/AKfycbzvn0Ts418vORNHBv0QFVgWzjVSDqAtX8d8GIJauipqOIkST65GtiC_gmq6Z_c9-qFyVg/exec"; // Cambia al tuyo
+const LOGIN_USER = "DOCENTESBROWN";
+const LOGIN_PASS = "NestorVive";
+
+// Estapas posibles, personaliza si querés
+const ETAPAS = ["cargado", "en fabricación", "terminada", "para entrega", "finalizado"];
+
+let isEditor = false;
+let pedidos = [];
+
+function showLogin() {
+  document.querySelector('.logout').style.display = 'none';
+  document.getElementById('main').innerHTML = `
+    <div class="login">
+      <h2>Ingreso de Editor</h2>
+      <input type="text" id="user" placeholder="Usuario" class="form" style="width:100%;margin-bottom:1em;">
+      <input type="password" id="pass" placeholder="Clave" class="form" style="width:100%;margin-bottom:1em;">
+      <button class="btn" onclick="login()">Ingresar</button>
+    </div>
+  `;
+}
+window.logout = function() {
+  localStorage.removeItem("editor");
+  isEditor = false;
+  showPedidos();
+}
+
+window.login = function() {
+  const user = document.getElementById('user').value;
+  const pass = document.getElementById('pass').value;
+  if (user === LOGIN_USER && pass === LOGIN_PASS) {
+    isEditor = true;
+    localStorage.setItem("editor", "1");
+    showPedidos();
+  } else {
+    alert("Usuario o clave incorrectos");
+  }
+}
+
+function fetchPedidos() {
+  return fetch(SHEET_CSV_URL).then(r=>r.text()).then(parseCSV);
+}
+
+function parseCSV(str) {
+  // Simple CSV parser
+  let rows = str.trim().split("\n").map(l => l.split(","));
+  const headers = rows.shift().map(h=>h.trim());
+  return rows.map(r=>{
+    let obj={};
+    r.forEach((val,i)=>obj[headers[i]]=val.trim());
+    return obj;
+  });
+}
+
+function timeDiffDays(dateStr) {
+  let d = new Date(dateStr);
+  let now = new Date();
+  return Math.floor((now-d)/(1000*60*60*24));
+}
+
+function showPedidos() {
+  document.querySelector('.logout').style.display = isEditor ? 'inline-block' : 'none';
+  document.getElementById('main').innerHTML = `<div style="text-align:center;margin:1em;"><b>Cargando datos...</b></div>`;
+  fetchPedidos().then(data => {
+    pedidos = data;
+    renderPedidos();
+    if (isEditor) checkOldPedidos();
+  });
+}
+
+function renderPedidos() {
+  let html = `<div class="container">`;
+  if (isEditor) html += `<div class="alert">Modo Editor activo <span class="editor-badge">EDITORES</span></div>`;
+  html += `<div class="grid">`;
+  pedidos.forEach((p, idx) => {
+    const nombre = p["Nombre"] || p["nombre"] || p["Producto"] || p["producto"] || p[Object.keys(p)[2]];
+    const etapa = p["Etapa"] || p["etapa"] || p[Object.keys(p)[25]];
+    const celular = (p["Celular"] || p["celular"] || p[Object.keys(p)[3]]).replace(/\D/g, "");
+    const contacto = p["Contacto"] || p["contacto"] || p[Object.keys(p)[5]];
+    const fechaEtapa = p["FechaEtapa"] || p["fechaetapa"] || p[Object.keys(p)[28]] || new Date().toISOString().substring(0,10);
+    const msg = encodeURIComponent(`Hola! Tu pedido "${nombre}" está en la etapa "${etapa}".`);
+    html += `
+      <div class="card">
+        <div class="card-title">${nombre}</div>
+        <div class="card-stage">Etapa: <b>${etapa}</b></div>
+        <div class="card-actions">
+          <a class="btn whatsapp" target="_blank" href="https://wa.me/54${celular}?text=${msg}">WhatsApp</a>
+          ${isEditor ? `<button class="btn stage" onclick="cambiarEtapa(${idx})">Cambiar etapa</button>` : ""}
+        </div>
       </div>
-    </div>
-    <div class="actions">
-      <button id="btnRefresh">Recargar</button>
-      <button id="btnToggleEdit" class="primary">Modo editor</button>
-    </div>
-  </header>
+    `;
+  });
+  html += `</div></div>`;
+  document.getElementById('main').innerHTML = html;
+}
 
-  <main>
-    <div id="staleBanner" class="banner"></div>
-    <div id="appAlert" class="alert"></div>
-    <div class="toolbar">
-      <input id="search" type="search" placeholder="Buscar por nombre, etapa o seguimiento…" />
-      <select id="filterEtapa">
-        <option value="__ALL__">Todas las etapas</option>
-      </select>
-    </div>
-    <div id="grid" class="grid" aria-live="polite"></div>
-  </main>
-
-  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js" defer></script>
-  <script>
-  (function(){
-    const CONFIG = {
-      CSV_URL: "https://docs.google.com/spreadsheets/d/e/2PACX-1vT-9IeM2BVQBw1SQEkbdmmp2yLMVzG-4krVRmc-JdWb6BIX4MSTLVL8DbYyGbm864ChHRvICrsad7Hi/pub?output=csv",
-      APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbx4vUDQ9Z1cbBYzt2Tlqq3yO8hNAXPmqb_bZ6AY9q1EYKc5M3D7CBGC4WA6aszDjWu1RQ/exec",
-      HAS_HEADER: true,
-      COL: { NOMBRE:2, TELEFONO:3, CONTACTO:5, ETAPA:23, ULTIMA_ACT:24, SEGUIMIENTO:26 },
-      AUTH: { user:"DOCENTESBROWN", pass:"NestorVive" },
-      PROXIES: [
-        (u)=>"https://cors.isomorphic-git.org/"+u,
-        (u)=>"https://r.jina.ai/http/"+u.replace(/^https?:\/\//,'')
-      ]
-    };
-
-    let RAW_ROWS = [];
-    let UNIQUE_ETAPAS = new Set();
-    let isEditor = false;
-
-    const $ = (sel)=>document.querySelector(sel);
-    const showAlert = (msg)=>{ const b=$('#appAlert'); b.textContent=msg; b.style.display='block'; };
-    const clearAlert = ()=>{ const b=$('#appAlert'); b.textContent=''; b.style.display='none'; };
-    const sanitizePhoneForWA = (raw)=>{ if(!raw) return ""; let n=(""+raw).replace(/\D+/g,""); if(!n.startsWith("54")) n="54"+n; n=n.replace(/^54(0+)/,"54"); n=n.replace(/^54(\d{2,4})15/,"54$1"); return n; };
-    const formatDaysAgo = (iso)=>{ try{ const d=new Date(iso); if(isNaN(d)) return null; return Math.floor((Date.now()-d.getTime())/(1000*60*60*24)); }catch{ return null; } };
-
-    async function fetchTextWithFallback(url){
-      // 1) directo
-      try{
-        const r = await fetch(url, {cache:"no-store"});
-        if(r.ok) return await r.text();
-        throw new Error("HTTP "+r.status);
-      }catch(e1){
-        // 2) proxies
-        for(const fn of CONFIG.PROXIES){
-          try{
-            const proxyUrl = fn(url);
-            const r2 = await fetch(proxyUrl, {cache:"no-store"});
-            if(r2.ok) return await r2.text();
-          }catch(e2){ /* try next */ }
-        }
-        // 3) Apps Script (JSON) si está configurado
-        if(CONFIG.APPS_SCRIPT_URL && !CONFIG.APPS_SCRIPT_URL.includes("PASTE_YOUR")){
-          try{
-            const r3 = await fetch(CONFIG.APPS_SCRIPT_URL + "?action=sheet", {cache:"no-store"});
-            if(r3.ok){
-              const js = await r3.json();
-              if(js && js.ok && Array.isArray(js.rows)){
-                // reconstruir CSV de JSON por compatibilidad con el parser
-                const lines = js.rows.map(row => row.map(x => (x==null?'':String(x).replace(/"/g,'""'))).map(x=>`"${x}"`).join(","));
-                return lines.join("\n");
-              }
-            }
-          }catch(e3){ /* give up */ }
-        }
-        throw new Error("No se pudo obtener el CSV (CORS/Red).");
+window.cambiarEtapa = function(idx) {
+  const p = pedidos[idx];
+  let etapaActual = p["Etapa"] || p["etapa"] || p[Object.keys(p)[23]];
+  let etapaIdx = ETAPAS.indexOf(etapaActual);
+  let nextEtapa = ETAPAS[(etapaIdx+1)%ETAPAS.length];
+  if (!confirm(`¿Seguro que querés cambiar la etapa a "${nextEtapa}"?`)) return;
+  // Llama a Apps Script para actualizar la fila correspondiente
+  fetch(`${APP_SCRIPT_API_URL}?action=update&row=${idx+2}&etapa=${encodeURIComponent(nextEtapa)}`,{method:'GET'})
+    .then(r=>r.json())
+    .then(resp=>{
+      if(resp.success){
+        alert("Etapa actualizada.");
+        // Enviar mail automático vía Apps Script
+        let contacto = p["Contacto"] || p["contacto"] || p[Object.keys(p)[5]];
+        fetch(`${APP_SCRIPT_API_URL}?action=mail&to=${encodeURIComponent(contacto)}&etapa=${encodeURIComponent(nextEtapa)}`,{method:'GET'});
+        showPedidos();
+      }else{
+        alert("Error al actualizar: "+resp.error);
       }
-    }
-
-    async function loadCSV(){
-      clearAlert();
-      try{
-        if(!window.Papa) throw new Error("PapaParse no cargó");
-        const text = await fetchTextWithFallback(CONFIG.CSV_URL);
-        const parsed = Papa.parse(text.trim());
-        let rows = parsed.data;
-        if(!rows || !rows.length) throw new Error("CSV vacío");
-        if(CONFIG.HAS_HEADER){
-          const header = rows.shift();
-          const idxUlt = header.findIndex(h => String(h||'').toLowerCase().includes('ultima') || String(h||'').toLowerCase().includes('actualiz'));
-          if(idxUlt>=0) CONFIG.COL.ULTIMA_ACT = idxUlt;
-          const idxEtp = header.findIndex(h => String(h||'').toLowerCase().includes('etapa'));
-          if(idxEtp>=0) CONFIG.COL.ETAPA = idxEtp;
-          const idxNom = header.findIndex(h => String(h||'').toLowerCase().includes('nombre'));
-          if(idxNom>=0) CONFIG.COL.NOMBRE = idxNom;
-          const idxSeg = header.findIndex(h => String(h||'').toLowerCase().includes('seguim'));
-          if(idxSeg>=0) CONFIG.COL.SEGUIMIENTO = idxSeg;
-        }
-        RAW_ROWS = rows;
-        UNIQUE_ETAPAS = new Set(rows.map(r=>r[CONFIG.COL.ETAPA]).filter(Boolean));
-        buildEtapaFilter();
-        render();
-      }catch(err){
-        console.error(err);
-        showAlert("❌ Error cargando datos: " + (err && err.message ? err.message : err));
-      }
-    }
-
-    function buildEtapaFilter(){
-      const sel = $('#filterEtapa');
-      sel.innerHTML = '<option value="__ALL__">Todas las etapas</option>';
-      Array.from(UNIQUE_ETAPAS).sort((a,b)=>String(a).localeCompare(String(b))).forEach(v=>{
-        const opt = document.createElement('option');
-        opt.value = v; opt.textContent = v;
-        sel.appendChild(opt);
-      });
-      sel.value = "__ALL__";
-    }
-
-    function render(){
-      const q = $('#search').value.toLowerCase().trim();
-      const f = $('#filterEtapa').value || "__ALL__";
-      const grid = $('#grid');
-      grid.innerHTML = '';
-      RAW_ROWS
-        .filter(r=>{
-          const nom = String(r[CONFIG.COL.NOMBRE]||'').toLowerCase();
-          const etp = String(r[CONFIG.COL.ETAPA]||'');
-          const seg = String(r[CONFIG.COL.SEGUIMIENTO]||'').toLowerCase();
-          const okQ = !q || nom.includes(q) || etp.toLowerCase().includes(q) || seg.includes(q);
-          const okF = (f === "__ALL__") || etp === f;
-          return okQ && okF;
-        })
-        .forEach((r, i)=>{
-          const name = r[CONFIG.COL.NOMBRE] || '(sin nombre)';
-          const etapa = r[CONFIG.COL.ETAPA] || '(sin etapa)';
-          const tel = r[CONFIG.COL.TELEFONO] || '';
-          const email = r[CONFIG.COL.CONTACTO] || '';
-          const ultima = r[CONFIG.COL.ULTIMA_ACT] || '';
-          const seg = r[CONFIG.COL.SEGUIMIENTO] || '';
-          const days = ultima ? formatDaysAgo(ultima) : null;
-
-          const card = document.createElement('article');
-          card.className = 'card';
-          card.innerHTML = `
-            <div class="row">
-              <h3 title="${name}">${name}</h3>
-              <span class="stage"><span class="stage dot" aria-hidden="true"></span><span>${etapa}</span></span>
-            </div>
-            <div class="kv"><strong>Seguimiento:</strong> <code class="mono">${seg || '—'}</code> ${seg ? '<button class="copy btn-sm" title="Copiar número">Copiar</button>' : ''}</div>
-            <div class="kv"><strong>Últ. act.:</strong> ${ultima ? new Date(ultima).toLocaleDateString() : '—'} ${(days!=null)?`<span class="pill">${days} días</span>`:''}</div>
-            <div class="cta">
-              <a class="wa" target="_blank" rel="noopener" href="https://wa.me/${sanitizePhoneForWA(tel)}?text=${encodeURIComponent(`Hola ${name}, te escribimos de Docentes Brown. Tu Agenda está en etapa: ${etapa}.`)}">WhatsApp</a>
-              <button class="btnChangeStage" ${isEditor?'':'disabled'}>Cambiar etapa</button>
-            </div>
-          `;
-
-          const copyBtn = card.querySelector('.copy');
-          if(copyBtn){
-            copyBtn.addEventListener('click', (e)=>{
-              e.stopPropagation();
-              if(!seg){ return; }
-              navigator.clipboard?.writeText(seg).catch(()=>{});
-            });
-          }
-
-          const changeBtn = card.querySelector('.btnChangeStage');
-          changeBtn.addEventListener('click', (ev)=>{
-            ev.stopPropagation();
-            if(!isEditor){ alert("Ingresá como editor (DOCENTESBROWN / NestorVive)"); return; }
-            openStageDialog(i, etapa);
-          });
-          card.addEventListener('click', ()=>{ if(isEditor) openStageDialog(i, etapa); });
-          grid.appendChild(card);
-        });
-    }
-
-    // Simple dialog via prompt (máxima compatibilidad)
-    function openStageDialog(rowIdx, currentEtapa){
-      const nueva = prompt("Nueva etapa:", currentEtapa || "");
-      if(nueva==null) return;
-      saveStage(rowIdx, nueva.trim());
-    }
-
-    async function saveStage(rowIdx, newStage){
-      if(!newStage){ alert("Elegí una etapa."); return; }
-      const r = RAW_ROWS[rowIdx];
-      const prev = r[CONFIG.COL.ETAPA];
-      r[CONFIG.COL.ETAPA] = newStage;
-      const name = r[CONFIG.COL.NOMBRE] || '';
-      const email = r[CONFIG.COL.CONTACTO] || '';
-      const rowNumber = CONFIG.HAS_HEADER ? (rowIdx + 2) : (rowIdx + 1);
-      render();
-
-      if(!CONFIG.APPS_SCRIPT_URL || CONFIG.APPS_SCRIPT_URL.includes("PASTE_YOUR")){
-        showAlert("⚠️ Solo vista local. Configurá el Web App en APPS_SCRIPT_URL para guardar y enviar mails.");
-        return;
-      }
-      try{
-        const body = new URLSearchParams({ action:"updateStage", rowNumber:String(rowNumber), newStage, name, email, user:CONFIG.AUTH.user, pass:CONFIG.AUTH.pass });
-        const res = await fetch(CONFIG.APPS_SCRIPT_URL, { method:"POST", headers:{ "Content-Type":"application/x-www-form-urlencoded;charset=UTF-8" }, body });
-        const js = await res.json();
-        if(js && js.ok){
-          r[CONFIG.COL.ULTIMA_ACT] = new Date().toISOString();
-          UNIQUE_ETAPAS.add(newStage); buildEtapaFilter(); render();
-        }else{
-          r[CONFIG.COL.ETAPA] = prev; render();
-          showAlert("❌ Error al actualizar: " + (js && js.error ? js.error : "desconocido"));
-        }
-      }catch(err){
-        r[CONFIG.COL.ETAPA] = prev; render();
-        showAlert("❌ Fallo de red/CORS guardando en Apps Script: " + (err && err.message ? err.message : err));
-      }
-    }
-
-    function ensureEditor(){
-      isEditor = localStorage.getItem("db_editor")==="1";
-      $('#badgeEdit').style.display = isEditor ? 'inline-block' : 'none';
-      $('#btnToggleEdit').textContent = isEditor ? "Salir de editor" : "Modo editor";
-      if(RAW_ROWS.length) render();
-    }
-    function toggleEdit(){
-      if(isEditor){ localStorage.removeItem("db_editor"); ensureEditor(); }
-      else{
-        const u = prompt("Usuario:");
-        const p = u!=null ? prompt("Clave:") : null;
-        if(u===null || p===null) return;
-        if(u==="DOCENTESBROWN" && p==="NestorVive"){ localStorage.setItem("db_editor","1"); ensureEditor(); }
-        else alert("Credenciales incorrectas");
-      }
-    }
-
-    // Events
-    window.addEventListener('DOMContentLoaded', ()=>{
-      ensureEditor();
-      $('#btnRefresh').addEventListener('click', loadCSV);
-      $('#btnToggleEdit').addEventListener('click', toggleEdit);
-      $('#search').addEventListener('input', render);
-      $('#filterEtapa').addEventListener('change', render);
-      loadCSV();
     });
-  })();
-  </script>
+}
+
+function checkOldPedidos() {
+  pedidos.forEach((p, idx) => {
+    const fechaEtapa = p["FechaEtapa"] || p["fechaetapa"] || p[Object.keys(p)[24]];
+    if (fechaEtapa && timeDiffDays(fechaEtapa) >= 7) {
+      // Notificación local simple, para push necesitas backend/service worker
+      setTimeout(()=>{
+        alert(`El pedido "${p["Nombre"]||p["Producto"]}" lleva más de 7 días en la misma etapa ("${p["Etapa"]}").`);
+      }, 1000);
+      // Puedes enviar email de alerta a los editores usando Apps Script
+      fetch(`${APP_SCRIPT_API_URL}?action=alerta&pedido=${encodeURIComponent(p["Nombre"]||p["Producto"])}&dias=${timeDiffDays(fechaEtapa)}`,{method:'GET'});
+    }
+  });
+}
+
+// Inicio
+if (localStorage.getItem("editor")) { isEditor = true; }
+showPedidos();
+</script>
 </body>
 </html>
