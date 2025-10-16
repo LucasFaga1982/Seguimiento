@@ -34,6 +34,13 @@
     padding:8px 12px; font-weight:700; cursor:pointer;
   }
   main{ padding:14px; max-width:980px; margin:0 auto; }
+  .toolbar{
+    display:flex; gap:10px; align-items:center; margin-bottom:12px; flex-wrap:wrap;
+  }
+  .toolbar select{
+    flex:1; min-width:220px; padding:10px 12px; border:1px solid #cbd5e1; border-radius:12px; font-size:14px;
+    background:#fff;
+  }
   .grid{
     display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:12px;
   }
@@ -114,6 +121,13 @@
   </header>
 
   <main>
+    <!-- Toolbar de filtros -->
+    <div class="toolbar">
+      <select id="filterEtapa" aria-label="Filtrar por etapa">
+        <option value="">Todas las etapas</option>
+      </select>
+    </div>
+
     <div id="grid" class="grid" aria-live="polite"></div>
   </main>
 
@@ -128,7 +142,7 @@
         <button class="btn primary" id="doLogin">Ingresar</button>
         <button class="btn ghost" id="cancelLogin">Cancelar</button>
       </div>
-      <div class="muted">Usuario: <b>docentesbrown</b> — Contraseña: <b>NestorVive</b></div>
+      <!-- Se ocultó el recordatorio de credenciales -->
     </div>
   </div>
 
@@ -174,6 +188,7 @@
   let isAdmin = false;      // sesión
   let selected = null;      // tarjeta seleccionada para acciones
   let overdues = [];        // atrasados > 7 días
+  let etapaFilter = '';     // filtro por etapa (uppercased)
 
   // ===================== HELPERS =====================
   function showToast(msg, ms=2200){
@@ -182,7 +197,6 @@
   }
 
   function parseCSV(text){
-    // Parser básico que soporta campos entrecomillados (comas internas y comillas escapadas)
     const rows=[]; let i=0, cur='', inQ=false, row=[];
     while(i<text.length){
       const c=text[i];
@@ -250,15 +264,26 @@
     });
   }
 
+  function populateFilters(){
+    const etapas = Array.from(new Set(data.map(r => (r.etapa||'').trim()).filter(Boolean)))
+      .sort((a,b)=>a.localeCompare(b,'es',{sensitivity:'base'}));
+    const sel = document.getElementById('filterEtapa');
+    sel.innerHTML = '<option value="">Todas las etapas</option>' + etapas.map(e=>`<option value="${e}">${e}</option>`).join('');
+  }
+
   // ===================== RENDER =====================
   function render(){
     const grid=document.getElementById('grid');
     grid.innerHTML='';
 
+    const rows = etapaFilter
+      ? data.filter(r => ((r.etapa||'').trim().toUpperCase()===etapaFilter))
+      : data;
+
     overdues = [];
     const now=new Date();
 
-    data.forEach(rec=>{
+    rows.forEach(rec=>{
       const d=parseDateCell(rec.fechaEtapa);
       const days = d ? daysBetween(now, d) : null;
       const isFinal = (rec.etapa||'').toUpperCase().trim()==='FINALIZADO';
@@ -299,12 +324,21 @@
       grid.appendChild(card);
     });
 
-    // Notify bar for overdues
+    // Notify bar for overdues (sobre todos los datos, no solo filtrados)
+    const allOverdues = data.reduce((acc, rec)=>{
+      const d=parseDateCell(rec.fechaEtapa);
+      const days = d ? daysBetween(new Date(), d) : null;
+      const isFinal = (rec.etapa||'').toUpperCase().trim()==='FINALIZADO';
+      const isOver = !isFinal && d && days>7;
+      if(isOver) acc.push({pedido:rec.pedido, docente:rec.docente, etapa:rec.etapa, dias:days});
+      return acc;
+    }, []);
+
     const bar=document.getElementById('notifyBar');
-    if(overdues.length>0){
-      document.getElementById('overdueCount').textContent = overdues.length;
-      const list = overdues.slice(0,10).map(o=>`Pedido ${o.pedido} (${o.docente}) — ${o.dias} días en ${o.etapa}`).join('\\n');
-      const extra = overdues.length>10 ? `\\n…y ${overdues.length-10} más.` : '';
+    if(allOverdues.length>0){
+      document.getElementById('overdueCount').textContent = allOverdues.length;
+      const list = allOverdues.slice(0,10).map(o=>`Pedido ${o.pedido} (${o.docente}) — ${o.dias} días en ${o.etapa}`).join('\\n');
+      const extra = allOverdues.length>10 ? `\\n…y ${allOverdues.length-10} más.` : '';
       const notifyMsg = `Alerta pedidos con más de 7 días sin cambios (no finalizados):\\n${list}${extra}`;
       const adminPhone = formatPhoneAR('1153196358');
       document.getElementById('notifyLink').href = `https://wa.me/${adminPhone}?text=${encodeURIComponent(notifyMsg)}`;
@@ -322,7 +356,6 @@
       const rows = parseCSV(text);
       if(!rows.length) { showToast('No hay datos'); return; }
 
-      const header = rows[0];
       for(let i=1;i<rows.length;i++){
         const r = rows[i];
         data.push({
@@ -336,6 +369,7 @@
         });
       }
 
+      populateFilters();
       render();
     }catch(err){
       console.error(err);
@@ -344,6 +378,12 @@
   }
 
   // ===================== EVENTS =====================
+  // Filtro por etapa
+  document.getElementById('filterEtapa').addEventListener('change', (e)=>{
+    etapaFilter = (e.target.value||'').trim().toUpperCase();
+    render();
+  });
+
   // Login
   const loginBtn=document.getElementById('loginBtn');
   const loginModal=document.getElementById('loginModal');
@@ -361,7 +401,7 @@
   document.getElementById('doLogin').addEventListener('click', ()=>{
     const u=document.getElementById('user').value.trim();
     const p=document.getElementById('pass').value;
-    if(u==='docentesbrown' && p==='NestorVive'){
+    if(u===ADMIN_USER && p===ADMIN_PASS){
       isAdmin=true; localStorage.setItem('db_admin','1');
       loginBtn.textContent='Salir';
       closeModal(loginModal);
